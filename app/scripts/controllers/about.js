@@ -8,7 +8,7 @@
  * Controller of the nestApp
  */
 angular.module('nestApp')
-  .controller('AboutCtrl', function ($scope) {
+  .controller('nestCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',

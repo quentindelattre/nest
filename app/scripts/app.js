@@ -22,11 +22,25 @@ angular
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
+      .when('/nest', {
+        templateUrl: 'views/nest.html',
+        controller: 'nestCtrl'
       })
       .otherwise({
         redirectTo: '/'
       });
+  }).run(['$rootScope', function($root) {
+
+  $root.$on('$routeChangeStart', function(e, curr, prev) {
+    if (curr.$$route && curr.$$route.resolve) {
+      // Show a loading message until promises are not resolved
+      $root.loadingView = true;
+    }
   });
+
+  $root.$on('$routeChangeSuccess', function(e, curr, prev) {
+    // Hide loading message
+    $root.loadingView = false;
+  });
+
+}]);
