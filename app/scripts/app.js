@@ -31,7 +31,7 @@ angular
       });
   }).run(['$rootScope', function($root) {
 
-  $root.$on('$routeChangeStart', function(e, curr, prev) {
+  $root.$on('$routeChangeStart', function(e, curr, prev, $timeout) {
     if (curr.$$route && curr.$$route.resolve) {
       // Show a loading message until promises are not resolved
       $root.loadingView = true;

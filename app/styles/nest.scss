@@ -1,0 +1,59 @@
+.wrapper{
+   position: relative;
+   height: 100%;
+   width: 100%;
+   header{
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 5;
+      height: 60px;
+      margin: 0;
+      border-bottom: 1px solid #e5e5e5;
+      text-align: center;
+      img{
+         height: 50px;
+         margin-top: 5px;
+      }
+   }
+   .main{
+      position: fixed;
+      top: 0;
+      z-index: 0;
+      padding-top: 60px;
+      width: 100vw;
+      height: 100vh;
+      .sidebar{
+         position: absolute;
+         height: 100%;
+         background: #efefef;
+         width: 20vw;
+         min-width: 200px;
+      }
+      .viz_wrap{
+         position: absolute;
+         right: 0;
+         height: 100%;
+         width: 80vw;
+         min-width: 800px;
+         .slider{
+            position: absolute;
+            z-index: 10;
+            top: 0;
+            right: 0;
+            height: 80px;
+            width: 100%;
+            background: #384987;
+         }
+         .visualization{
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            height: 100%;
+            padding-top: 80px;
+            width: 100%;
+            background: #908187;
+         }
+      }
+   }
+}

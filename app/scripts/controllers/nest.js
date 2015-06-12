@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc function
- * @name nestApp.controller:AboutCtrl
+ * @name nestApp.controller:nestCtrl
  * @description
- * # AboutCtrl
+ * # nestCtrl
  * Controller of the nestApp
  */
 angular.module('nestApp')
