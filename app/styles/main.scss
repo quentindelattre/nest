@@ -26,6 +26,10 @@ footer {
    padding-top: 10px;
    color: #777;
    border-top: 1px solid #e5e5e5;
+   text-align: right;
+   font-size: 2vw;
+   padding-right: 0.5vw;
+   font-size: 0.8vw;
 }
 
 .container-narrow > hr {
@@ -66,6 +70,47 @@ footer {
       font-size: small;
    }
 }
+
+.modal {
+      background: #CCC;
+      height: 100%;
+      opacity: .75;
+      position: absolute; top: 0; left: 0;
+      width: 100%;
+      z-index: 999;
+    }
+    #loading {
+      list-style: none;
+      margin: 250px auto;
+      text-align: center;
+      width: 400px;
+    }
+
+    /* Loading animation inspired by http://codepen.io/joni/details/FiKsd */
+
+    @keyframes loader{
+      50% { height: 6px; margin-top: 74px; opacity: .1; }
+    }
+
+    .bar {
+      height: 80px;
+      width: 6px;
+      border-radius: 3px;
+      background: #333;
+      display :inline-block;
+      margin: 0 2px;
+      animation: loader 1.3s infinite;
+    }
+
+    .bar:nth-child(1) { animation-delay: .1s; }
+    .bar:nth-child(2) { animation-delay: .2s; }
+    .bar:nth-child(4) { animation-delay: .4s; }
+    .bar:nth-child(5) { animation-delay: .5s; }
+    .bar:nth-child(6) { animation-delay: .6s; }
+    .bar:nth-child(7) { animation-delay: .7s; }
+    .bar:nth-child(8) { animation-delay: .8s; }
+    .bar:nth-child(9) { animation-delay: .9s; }
+    .bar:nth-child(10) { animation-delay: 1s; }
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
