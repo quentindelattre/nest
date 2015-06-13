@@ -8,6 +8,7 @@
    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
    <!-- build:css(.) styles/vendor.css -->
    <!-- bower:css -->
+   <link rel="stylesheet" href="bower_components/angularjs-slider/dist/rzslider.css" />
    <!-- endbower -->
    <!-- endbuild -->
    <!-- build:css(.tmp) styles/main.css -->
@@ -23,10 +24,11 @@
 
    <ng-view></ng-view>
 
-   <div class="modal" ng-show="loadingView">
-      <ul id="loading">
-         <li class="bar" ng-repeat="i in [0,1,2,3,4,5,6,7,8,9]"></li>
-      </ul>
+   <div class="load_modal" ng-if="loadingView">
+      <div class="item">
+         <div class="spinner2"></div>
+         <h5>Loading<span class="dot">.</span></h5>
+      </div>
    </div>
 
 
@@ -44,12 +46,12 @@
    <script src="bower_components/angular-resource/angular-resource.js"></script>
    <script src="bower_components/angular-route/angular-route.js"></script>
    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-   <script src="bower_components/oauthio/app/js/oauth.min.js"></script>
-   <script src="bower_components/oauthio/app/js/angular-oauth.io.min.js"></script>
-   <script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
+   <script src="bower_components/angularjs-slider/rzslider.js"></script>
    <!-- endbower -->
    <!-- endbuild -->
 
+    <script src="bower_components/oauthio/app/js/oauth.min.js"></script>
+    <script src="bower_components/oauthio/app/js/oauth.js"></script>
    <!-- build:js({.tmp,app}) scripts/scripts.js -->
    <script src="scripts/app.js"></script>
    <script src="scripts/controllers/main.js"></script>

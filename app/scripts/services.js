@@ -26,6 +26,7 @@ services.factory('twitterService', function($q, $timeout) {
                defer.resolve();
             } else {
                //do something if there's an error
+               defer.reject('Connexion failed', error);
             }
          });
          return defer.promise;

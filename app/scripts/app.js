@@ -11,7 +11,6 @@
 angular
 .module('nestApp', [
    'nestApp.services',
-   'oauth.io',
    'rzModule',
    'ngAnimate',
    'ngCookies',
@@ -33,16 +32,13 @@ angular
             return twitterService.initialize();
          },
          connectTwitter: function(twitterService){
-            return twitterService.connectTwitter().then(function() {
-               if (twitterService.isReady()) {
-                  twitterService.getUser();
-               }
-            });
+            return twitterService.connectTwitter();
          },
          user: function(twitterService) {
             return twitterService.getUser();
+
          // },
-         // UserTimeline: function(twitterService) {
+         // userTimeline: function(twitterService) {
          //    return twitterService.getUserTimeline();
          // },
          // followersActivity: function(twitterService) {
@@ -63,14 +59,12 @@ angular
       if (curr.$$route && curr.$$route.resolve) {
          // Show a loading message until promises are not resolved
          $root.loadingView = true;
-         console.log('loading', $root.loadingView);
       }
    });
 
    $root.$on('$routeChangeSuccess', function(e, curr, prev) {
       // Hide loading message
-      // $root.loadingView = false;
-      console.log('done.', $root.loadingView);
+      $root.loadingView = false;
    });
 
 }]);
