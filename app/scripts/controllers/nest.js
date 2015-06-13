@@ -8,16 +8,10 @@
 * Controller of the nestApp
 */
 angular.module('nestApp')
-.controller('nestCtrl',['$scope', '$location', 'twitterService', 'initialize', 'connectTwitter', 'user', function ($scope, $location, twitterService, user) {
+.controller('nestCtrl',['$scope', '$location', 'twitterService', 'user', function ($scope, $location, twitterService, user) {
 
-   // twitterService.initialize();
-   // twitterService.connectTwitter().then(function() {
-   //    if (twitterService.isReady()) {
-   //       console.log('connected');
-   //    }
-   // });
 
-   // $scope.user=user;
+   $scope.user=user;
 
    $scope.signOut = function() {
       console.log('Bye bye');

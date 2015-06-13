@@ -8,10 +8,14 @@
  * Controller of the nestApp
  */
 angular.module('nestApp')
-  .controller('MainCtrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-  });
+  .controller('MainCtrl', ['$scope', '$location', 'twitterService', function ($scope, $location, twitterService) {
+    $scope.initializeNest = function(){
+      twitterService.initialize();
+      twitterService.connectTwitter().then(function() {
+         if (twitterService.isReady()) {
+            $location.path('/nest');
+         }else {
+         }
+      });
+   };
+}]);

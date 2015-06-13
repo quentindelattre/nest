@@ -6,7 +6,6 @@ services.factory('twitterService', function($q, $timeout) {
 
    var TwitterAuth = false;
 
-
    return {
       initialize: function() {
          OAuth.setOAuthdURL('http://localhost:6284');
@@ -31,6 +30,10 @@ services.factory('twitterService', function($q, $timeout) {
          });
          return defer.promise;
       },
+      clearCache: function() {
+         OAuth.clearCache('twitter');
+         TwitterAuth = false;
+      },
       getUser: function(){
          var defer = $q.defer();
          var promise = TwitterAuth.get('/1.1/account/verify_credentials.json').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
@@ -38,31 +41,6 @@ services.factory('twitterService', function($q, $timeout) {
             defer.resolve(data);
          });
          //return the promise of the defer object
-         return defer.promise;
-      },
-      clearCache: function() {
-         OAuth.clearCache('twitter');
-         TwitterAuth = false;
-      },
-      getLatestTweets: function () {
-         //create a defer object using Angular's $q service
-         var defer = $q.defer();
-         var promise = TwitterAuth.get('/1.1/statuses/home_timeline.json').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
-            //when the data is retrieved resolved the defer object
-            defer.resolve(data);
-         });
-         //return the promise of the defer object
-         return defer.promise;
-      },
-      countFollowers: function (usrId) {
-         //create a defer object using Angular's $q service
-         // // console.log(scr_name);
-         var defer = $q.defer(); // Create deffered object
-         var promise = TwitterAuth.get('/1.1/users/show.json?id='+usrId);  // Create promise -> API Request
-         promise.then(function(data){
-            defer.resolve(data);
-            // resolve retrieved data
-         });
          return defer.promise;
       },
       getFollowersActivity: function (callback, usrId, cursor) {

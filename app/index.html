@@ -15,6 +15,8 @@
    <link rel="stylesheet" href="styles/main.css">
    <link rel="stylesheet" href="bower_components/angularjs-slider/dist/rzslider.min.css" media="screen">
    <!-- endbuild -->
+   <script src="//use.typekit.net/zip7jcy.js"></script>
+   <script>try{Typekit.load();}catch(e){}</script>
 </head>
 <body ng-app="nestApp">
    <!--[if lt IE 7]>
@@ -25,15 +27,14 @@
    <ng-view></ng-view>
 
    <div class="load_modal" ng-if="loadingView">
-      <div class="item">
-         <div class="spinner2"></div>
-         <h5>Loading<span class="dot">.</span></h5>
+      <div class="loader">
+         Loading<span class="dot">.</span>
       </div>
    </div>
 
 
    <footer>
-      <p><span class="glyphicon glyphicon-heart"></span> Travail de Bachelor HEIG-VD // Quentin de Lattre</p>
+      <p><span class="glyphicon glyphicon-heart"></span>&nbsp;&nbsp;&nbsp;Travail de Bachelor HEIG-VD // Quentin de Lattre</p>
    </div>
 
    <!-- build:js(.) scripts/vendor.js -->
