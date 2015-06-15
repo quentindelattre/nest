@@ -133,7 +133,7 @@ services.factory('twitterService', function($q, $timeout) {
          getFollowers();
 
          mainDefer.promise.then(function(data){
-            console.log('success');
+            console.log('get followers activity success');
          });
          return mainDefer.promise;
 
@@ -169,7 +169,7 @@ services.factory('twitterService', function($q, $timeout) {
                }
                url = url.replace(/maxId=[\d]*/g, 'maxId='+maxId);
                // console.log(url);
-               if (i<0){ // to get up to 3200 last tweets
+               if (i<2){ // i<16 to get up to 3200 last tweets
 
                   // Create promise
                   var promise = TwitterAuth.get(url);
@@ -196,7 +196,7 @@ services.factory('twitterService', function($q, $timeout) {
                   });
                   return defer.promise;
                } else {
-                  console.log('Final timeline size: '+timeline.length);
+                  // console.log('Final user timeline size: ', timeline.length);
 
                   // resolve main promise
                   mainDefer.resolve(timeline);
@@ -204,7 +204,7 @@ services.factory('twitterService', function($q, $timeout) {
                }
             } else {
                //Execute request for the first time
-               // console.log('run for maxId undefined');
+               console.log('run for maxId undefined');
 
                // Create promise
                var promise = TwitterAuth.get(url);
@@ -232,9 +232,9 @@ services.factory('twitterService', function($q, $timeout) {
          getTweet();
 
          mainDefer.promise.then(function(data){
-            console.log('success');
+            console.log('get user timeline success');
          });
-         return mainDefer.promse;
+         return mainDefer.promise;
       },
       getMentionsTimeline: function (maxId) {
 
@@ -328,7 +328,7 @@ services.factory('twitterService', function($q, $timeout) {
          getTweet();
 
          mainDefer.promise.then(function(data){
-            console.log('success');
+            console.log('get mentions timeline success');
          });
          return mainDefer.promise;
       }
