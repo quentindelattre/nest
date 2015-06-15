@@ -10,10 +10,7 @@
 angular.module('nestApp')
 .controller('nestCtrl',['$scope', '$rootScope', '$location', '$q', 'twitterService', 'user', function ($scope, $root, $location, $q, twitterService, user) {
 
-   var isDataRetrieved = false;
-
    $scope.user=user;
-
 
    setTimeMachine(user);
 
@@ -37,6 +34,33 @@ angular.module('nestApp')
       }
    };
 
+   $scope.getStats = function(){
+      var userFollowersCount = user.followers_count;
+
+      var activeVal = countActiveFollower($scope.activeFollowers, $scope.timeMachine.max),
+         activeRatio = ((activeVal/userFollowersCount)*100).toFixed(2),
+         mentionsCount = countMentions($scope.mentionsTimeline, $scope.timeMachine.max),
+         rtCount = countRetweets($scope.userTimeline, $scope.timeMachine.max),
+         favCount = countFavorites($scope.mentionsTimeline, $scope.timeMachine.max),
+         engagementVal = mentionsCount+rtCount+favCount,
+         engagementRatio = ((engagementVal/userFollowersCount)*100).toFixed(2);
+
+
+      $scope.stats= {
+         active:{
+            val   :  activeVal,
+            ratio :  activeRatio
+         },
+         engaged:{
+            mentions :  mentionsCount,
+            retweets :  rtCount,
+            favorite :  favCount,
+            val      :  engagementVal,
+            ratio    :  engagementRatio
+         }
+      };
+   };
+
    function getValues (user){
       $root.loadingView=true;
       var defer = $q.defer();
@@ -54,7 +78,7 @@ angular.module('nestApp')
    function getFollowersActivity(usrId){
       var defer = $q.defer();
       var promise = twitterService.getFollowersActivity(usrId).then(function(data){
-         $scope.engagedFollowers=processFollowers(data);
+         $scope.activeFollowers=processFollowers(data);
          console.log('followers activity');
          defer.resolve(data);
       })
@@ -100,31 +124,72 @@ angular.module('nestApp')
    }
 
    function processFollowers(followers){
-      var engagedFollowers=[];
+      var activeFollowers=[];
       for (var i = 0; i < followers.length; i++) {
          if (followers[i].status) {
             followers[i].status=processSingleTweet(followers[i].status);
-            engagedFollowers.push(followers[i]);
+            activeFollowers.push(followers[i]);
          }
       }
-      engagedFollowers.reverse(engagedFollowers.sort(compareFollowers));
-      return engagedFollowers;
+      activeFollowers.reverse(activeFollowers.sort(compareFollowers));
+      return activeFollowers;
    }
 
    function setTimeMachine(){
       getValues(user).then(function(){
          var oldestItems = [
-             $scope.engagedFollowers[$scope.engagedFollowers.length-1].status.created_at.days,
+             $scope.activeFollowers[$scope.activeFollowers.length-1].status.created_at.days,
              $scope.mentionsTimeline[$scope.mentionsTimeline.length-1].created_at.days,
              $scope.userTimeline[$scope.userTimeline.length-1].created_at.days
          ];
 
          $scope.timeMachine = {
-             max: 180,
+             max: 7,
              ceil: Math.max.apply(Math, oldestItems),
              floor: 0
          };
+         console.log($scope.timeMachine);
+         setStats();
       });
+   }
+
+   function setStats(){
+      var userFollowersCount = user.followers_count;
+
+      var activeVal = countActiveFollower($scope.activeFollowers, $scope.timeMachine.max),
+         activeRatio = ((activeVal/userFollowersCount)*100).toFixed(2),
+         mentionsCount = countMentions($scope.mentionsTimeline, $scope.timeMachine.max),
+         rtCount = countRetweets($scope.userTimeline, $scope.timeMachine.max),
+         favCount = countFavorites($scope.mentionsTimeline, $scope.timeMachine.max),
+         engagementVal = mentionsCount+rtCount+favCount,
+         engagementRatio = ((engagementVal/userFollowersCount)*100).toFixed(2);
+
+
+      $scope.stats= {
+         active:{
+            val   :  activeVal,
+            ratio :  activeRatio
+         },
+         engaged:{
+            mentions :  mentionsCount,
+            retweets :  rtCount,
+            favorite :  favCount,
+            val      :  engagementVal,
+            ratio    :  engagementRatio
+         }
+      };
+   };
+
+   function countActiveFollower(followers, timeLimit){
+      var followerCount = 0;
+
+      for (var i = 0; i < followers.length; i++) {
+         if (followers[i].status.created_at.days<=timeLimit) {
+            followerCount++
+         }
+      }
+
+      return followerCount;
    }
 
    function countMentions(allTweets, timeLimit){

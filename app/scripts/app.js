@@ -11,7 +11,6 @@
 angular
 .module('nestApp', [
    'nestApp.services',
-   'rzModule',
    'ngAnimate',
    'ngCookies',
    'ngResource',

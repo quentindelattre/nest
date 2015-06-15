@@ -36,6 +36,7 @@ services.factory('twitterService', function($q, $timeout) {
       },
       getUser: function(){
          var defer = $q.defer();
+         
          function getAuthUser(){
             var promise = TwitterAuth.get('/1.1/account/verify_credentials.json').then(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
                //when the data is retrieved resolved the defer object

@@ -10,7 +10,7 @@
                <img ng-src="{{user.profile_image_url}}" alt="Twitter profile img" />
                <h1>Hello, @{{user.screen_name}}</h1>
             </div>
-            <div class="stats">
+            <div class="stats" ng-if="stats">
                <ul>
                   <li>
                      Total followers
@@ -21,32 +21,33 @@
                   <li>
                      Active followers in the last {{timeMachine.max}} days
                      <ul>
-                        <li>34290</li>
-                        <li>43.3%</li>
+                        <li>{{stats.active.val}}</li>
+                        <li>{{stats.active.ratio}}%</li>
                      </ul>
                   </li>
                   <li>
                      Engaged followers in the last {{timeMachine.max}} days
                      <ul>
-                        <li>4893</li>
-                        <li>12.9%</li>
+                        <li>{{stats.engaged.val}}</li>
+                        <li>{{stats.engaged.ratio}}%</li>
                      </ul>
                   </li>
                </ul>
             </div>
-            <div class="bottom">
+            <div class="bottom" ng-if="stats">
                <button ng-click="signOut()" id="signOut" type="button" class="btn btn-danger">Sign Out</button>
                <button ng-click="refresh()" id="refresh" type="button" class="btn btn-simple">Refresh</button>
             </div>
          </div>
       <div class="viz_wrap">
          <div class="slider">
-            <rzslider
+            <input ng-if="timeMachine" type="range" value="timeMachine.max" max="timeMachine.ceil" min="timeMachine.floor" ng-model="timeMachine.max" ng-change="getStats()">
+            <!-- <rzslider
     rz-slider-floor="timeMachine.floor"
     rz-slider-ceil="timeMachine.ceil"
     rz-slider-model="timeMachine.max"
     rz-slider-always-show-bar="true"
-    rz-slider-translate="translate"></rzslider>
+    rz-slider-translate="translate" ng-if="timeMachine" ng-model="timeMachine.max" ng-change="getStats()"></rzslider> -->
          </div>
          <div class="visualization">
 
