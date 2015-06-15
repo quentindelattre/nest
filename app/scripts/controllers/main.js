@@ -8,7 +8,8 @@
  * Controller of the nestApp
  */
 angular.module('nestApp')
-  .controller('MainCtrl', ['$scope', '$location', 'twitterService', function ($scope, $location, twitterService) {
+  .controller('MainCtrl', ['$scope', '$rootScope', '$location', 'twitterService', function ($scope, $root, $location, twitterService) {
+    $root.loadingView = false;
     $scope.initializeNest = function(){
       twitterService.initialize();
       twitterService.connectTwitter().then(function() {

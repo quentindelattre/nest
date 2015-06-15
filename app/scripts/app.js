@@ -64,7 +64,7 @@ angular
 
    $root.$on('$routeChangeSuccess', function(e, curr, prev) {
       // Hide loading message
-      $root.loadingView = false;
+      // $root.loadingView = false;
    });
 
 }]);

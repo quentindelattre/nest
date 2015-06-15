@@ -36,14 +36,21 @@ services.factory('twitterService', function($q, $timeout) {
       },
       getUser: function(){
          var defer = $q.defer();
-         var promise = TwitterAuth.get('/1.1/account/verify_credentials.json').done(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
-            //when the data is retrieved resolved the defer object
-            defer.resolve(data);
-         });
+         function getAuthUser(){
+            var promise = TwitterAuth.get('/1.1/account/verify_credentials.json').then(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+               //when the data is retrieved resolved the defer object
+               defer.resolve(data);
+            }, function(err){
+               // If session has expired
+               console.log('waiting...');
+               $timeout(getAuthUser, 300000); // Wait 15 minutes for new session
+            });
+         }
+         getAuthUser();
          //return the promise of the defer object
          return defer.promise;
       },
-      getFollowersActivity: function (callback, usrId, cursor) {
+      getFollowersActivity: function (usrId, cursor) {
 
          //user_id changed to account with more activity than @qntndlttr
          // usrId=9507972;
@@ -51,7 +58,7 @@ services.factory('twitterService', function($q, $timeout) {
          // console.log('user id: '+usrId);
 
          //create a defer object using Angular's $q service
-         var defer = $q.defer();
+         var mainDefer = $q.defer();
 
          //Form request URL
          var baseURL = '/1.1/followers/list.json?';
@@ -59,7 +66,13 @@ services.factory('twitterService', function($q, $timeout) {
          params=params.join('&');
          var url = baseURL+params;
 
+
+         // var mainPromise = getFollowers(cursor).then(function(data){
+         //    console.log('mainPromise resolved', data);
+         // })
+
          function getFollowers(cursor){
+            var defer = $q.defer();
             console.log('current cursor: '+cursor);
             if (cursor || cursor===0) {
                console.log('run for cursor defined: '+cursor);
@@ -74,7 +87,7 @@ services.factory('twitterService', function($q, $timeout) {
                      defer.resolve(data);
 
                      // Set new cursor according to last page's next_id
-                     var newCursor=data.nextCursor;
+                     var newCursor=data.next_cursor;
                      // console.log('new maxId: '+newMaxId);
 
                      // Update followers list with retrieved values
@@ -87,12 +100,13 @@ services.factory('twitterService', function($q, $timeout) {
                      console.log('waiting...');
                      $timeout(getFollowers, 900000); // Wait 15 minutes for new session
                   });
-                  return defer.promise;
                } else {
                   console.log('Game over', followersList.length);
 
                   // Callback function from controller
-                  callback(followersList);
+                  // callback(followersList);
+                  mainDefer.resolve(followersList);
+                  return defer.promise;
                }
             } else {
                //Execute request for the first time
@@ -103,7 +117,7 @@ services.factory('twitterService', function($q, $timeout) {
                promise.then(function(data){
                   defer.resolve(data);
                   // Set first cursor for paging
-                  cursor=data.nextCursor;
+                  cursor=data.next_cursor;
                   console.log('cursor', cursor);
                   // Update followersList with retrieved values
                   followersList=followersList.concat(data.users);
@@ -117,8 +131,15 @@ services.factory('twitterService', function($q, $timeout) {
             }
          }
          getFollowers();
+
+         mainDefer.promise.then(function(data){
+            console.log('success');
+         });
+         return mainDefer.promise;
+
+
       },
-      getUserTimeline: function (callback, usrId, maxId) {
+      getUserTimeline: function (usrId, maxId) {
 
          //user_id changed to account with more activity than @qntndlttr
          // usrId=9507972;
@@ -126,7 +147,7 @@ services.factory('twitterService', function($q, $timeout) {
          // console.log('user id: '+usrId);
 
          //create a defer object using Angular's $q service
-         var defer = $q.defer();
+         var mainDefer = $q.defer();
 
          //Form request URL
          var baseURL = '/1.1/statuses/user_timeline.json?';
@@ -138,6 +159,7 @@ services.factory('twitterService', function($q, $timeout) {
          var i=0;
 
          function getTweet(maxId){
+            var defer = $q.defer();
             // console.log('run : '+i);
             // console.log('current maxId: '+maxId);
             if (maxId) {
@@ -168,13 +190,17 @@ services.factory('twitterService', function($q, $timeout) {
 
                      // Repeat function asynchronously
                      getTweet(newMaxId);
+                  }, function(err){
+                     console.log('waiting…');
+                     $timeout(getTweet, 900000);
                   });
                   return defer.promise;
                } else {
-                  // console.log('Final timeline size: '+timeline.length);
+                  console.log('Final timeline size: '+timeline.length);
 
-                  // Callback function from controller
-                  callback(timeline);
+                  // resolve main promise
+                  mainDefer.resolve(timeline);
+                  return defer.promise;
                }
             } else {
                //Execute request for the first time
@@ -195,21 +221,29 @@ services.factory('twitterService', function($q, $timeout) {
 
                   // Repeat function asynchronously
                   getTweet(maxId);
+               }, function(err){
+                  console.log('waiting…');
+                  $timeout(getTweet, 900000);
                });
                return defer.promise;
             }
          }
 
          getTweet();
+
+         mainDefer.promise.then(function(data){
+            console.log('success');
+         });
+         return mainDefer.promse;
       },
-      getMentionsTimeline: function (callback, maxId) {
+      getMentionsTimeline: function (maxId) {
 
          //user_id changed to account with more activity than @qntndlttr
          // usrId=9507972;
          var timeline=[];
 
          //create a defer object using Angular's $q service
-         var defer = $q.defer();
+         var mainDefer = $q.defer();
 
          //Form request URL
          var baseURL = '/1.1/statuses/mentions_timeline.json?';
@@ -221,6 +255,7 @@ services.factory('twitterService', function($q, $timeout) {
 
 
          function getTweet(maxId){
+            var defer = $q.defer();
             // console.log('run : '+i);
             // console.log('current maxId: '+maxId);
             if (maxId) {
@@ -251,13 +286,17 @@ services.factory('twitterService', function($q, $timeout) {
 
                      // Repeat function asynchronously
                      getTweet(newMaxId);
+                  }, function(err){
+                     console.log('waiting…');
+                     $timeout(getTweet, 900000);
                   });
                   return defer.promise;
                } else {
                   // console.log('Final timeline size: '+timeline.length);
 
                   // Callback function from controller
-                  callback(timeline);
+                  mainDefer.resolve(timeline);
+                  return defer.promise;
                }
             } else {
                //Execute request for the first time
@@ -278,12 +317,20 @@ services.factory('twitterService', function($q, $timeout) {
 
                   // Repeat function asynchronously
                   getTweet(maxId);
+               }, function(err){
+                  console.log('waiting…');
+                  $timeout(getTweet, 900000);
                });
                return defer.promise;
             }
          }
 
          getTweet();
+
+         mainDefer.promise.then(function(data){
+            console.log('success');
+         });
+         return mainDefer.promise;
       }
    };
 });
