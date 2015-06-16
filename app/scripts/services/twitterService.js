@@ -36,7 +36,7 @@ services.factory('twitterService', function($q, $timeout) {
       },
       getUser: function(){
          var defer = $q.defer();
-         
+
          function getAuthUser(){
             var promise = TwitterAuth.get('/1.1/account/verify_credentials.json').then(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
                //when the data is retrieved resolved the defer object
@@ -77,10 +77,12 @@ services.factory('twitterService', function($q, $timeout) {
             console.log('current cursor: '+cursor);
             if (cursor || cursor===0) {
                console.log('run for cursor defined: '+cursor);
+               url=url.replace(/&cursor=[\d]*/gi, "");
                url+='&cursor='+cursor;
-               url = url.replace(/cursor=[\d]*/g, 'cursor='+cursor);
-               // console.log(url);
-               if (cursor!==0){ // Paginate until cursor is = 0
+               console.log(url);
+               var endCursor = 0 ;// Paginate until cursor is = 0
+               // var endCursor = 1503939935476927500 ;// test
+               if (cursor!==endCursor){
 
                   // Create promise
                   var promise = TwitterAuth.get(url);

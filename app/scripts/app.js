@@ -11,6 +11,7 @@
 angular
 .module('nestApp', [
    'nestApp.services',
+   'rzModule',
    'ngAnimate',
    'ngCookies',
    'ngResource',
@@ -35,16 +36,6 @@ angular
          },
          user: function(twitterService) {
             return twitterService.getUser();
-
-         // },
-         // userTimeline: function(twitterService) {
-         //    return twitterService.getUserTimeline();
-         // },
-         // followersActivity: function(twitterService) {
-         //    return twitterService.getFollowersActivity();
-         // },
-         // mentionsTimeline: function(twitterService) {
-         //    return twitterService.getMentionsTimeline();
          }
       }
    })
@@ -67,3 +58,8 @@ angular
    });
 
 }]);
+
+// setup dependency injection
+angular.module('d3', []);
+angular.module('nestApp.controllers', []);
+angular.module('nestApp.directives', ['d3']);

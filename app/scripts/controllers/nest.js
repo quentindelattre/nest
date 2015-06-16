@@ -34,32 +34,10 @@ angular.module('nestApp')
       }
    };
 
-   $scope.getStats = function(){
-      var userFollowersCount = user.followers_count;
-
-      var activeVal = countActiveFollower($scope.activeFollowers, $scope.timeMachine.max),
-         activeRatio = ((activeVal/userFollowersCount)*100).toFixed(2),
-         mentionsCount = countMentions($scope.mentionsTimeline, $scope.timeMachine.max),
-         rtCount = countRetweets($scope.userTimeline, $scope.timeMachine.max),
-         favCount = countFavorites($scope.mentionsTimeline, $scope.timeMachine.max),
-         engagementVal = mentionsCount+rtCount+favCount,
-         engagementRatio = ((engagementVal/userFollowersCount)*100).toFixed(2);
-
-
-      $scope.stats= {
-         active:{
-            val   :  activeVal,
-            ratio :  activeRatio
-         },
-         engaged:{
-            mentions :  mentionsCount,
-            retweets :  rtCount,
-            favorite :  favCount,
-            val      :  engagementVal,
-            ratio    :  engagementRatio
-         }
-      };
-   };
+   $scope.$on("slideEnded", function() {
+      setStats();
+      $scope.$apply();
+   });
 
    function getValues (user){
       $root.loadingView=true;
@@ -145,10 +123,10 @@ angular.module('nestApp')
 
          $scope.timeMachine = {
              max: 7,
-             ceil: Math.max.apply(Math, oldestItems),
+            //  ceil: Math.max.apply(Math, oldestItems),
+            ceil: 183, // 6 months
              floor: 0
          };
-         console.log($scope.timeMachine);
          setStats();
       });
    }
@@ -157,12 +135,12 @@ angular.module('nestApp')
       var userFollowersCount = user.followers_count;
 
       var activeVal = countActiveFollower($scope.activeFollowers, $scope.timeMachine.max),
-         activeRatio = ((activeVal/userFollowersCount)*100).toFixed(2),
+         activeRatio = ((activeVal/userFollowersCount)*100).toFixed(1),
          mentionsCount = countMentions($scope.mentionsTimeline, $scope.timeMachine.max),
          rtCount = countRetweets($scope.userTimeline, $scope.timeMachine.max),
          favCount = countFavorites($scope.mentionsTimeline, $scope.timeMachine.max),
          engagementVal = mentionsCount+rtCount+favCount,
-         engagementRatio = ((engagementVal/userFollowersCount)*100).toFixed(2);
+         engagementRatio = ((engagementVal/userFollowersCount)*100).toFixed(1);
 
 
       $scope.stats= {

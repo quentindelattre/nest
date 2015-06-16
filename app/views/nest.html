@@ -27,9 +27,14 @@
                   </li>
                   <li>
                      Engaged followers in the last {{timeMachine.max}} days
-                     <ul>
+                     <ul class="engagement">
                         <li>{{stats.engaged.val}}</li>
                         <li>{{stats.engaged.ratio}}%</li>
+                     </ul>
+                     <ul class="stats_details">
+                        <li><span class="glyphicon glyphicon-retweet"></span>{{stats.engaged.retweets}}</li>
+                        <li><span class="glyphicon glyphicon-star"></span>{{stats.engaged.favorite}}</li>
+                        <li><span class="glyphicon glyphicon-share-alt"></span>{{stats.engaged.mentions}}</li>
                      </ul>
                   </li>
                </ul>
@@ -41,16 +46,15 @@
          </div>
       <div class="viz_wrap">
          <div class="slider">
-            <input ng-if="timeMachine" type="range" value="timeMachine.max" max="timeMachine.ceil" min="timeMachine.floor" ng-model="timeMachine.max" ng-change="getStats()">
-            <!-- <rzslider
+            <rzslider
     rz-slider-floor="timeMachine.floor"
     rz-slider-ceil="timeMachine.ceil"
     rz-slider-model="timeMachine.max"
     rz-slider-always-show-bar="true"
-    rz-slider-translate="translate" ng-if="timeMachine" ng-model="timeMachine.max" ng-change="getStats()"></rzslider> -->
+    rz-slider-translate="translate" ng-if="timeMachine"></rzslider>
          </div>
          <div class="visualization">
-
+            
          </div>
       </div>
    </section>
