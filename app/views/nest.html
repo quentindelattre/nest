@@ -54,7 +54,19 @@
     rz-slider-translate="translate" ng-if="timeMachine"></rzslider>
          </div>
          <div class="visualization">
-            
+            <div class="venn">
+
+            </div>
+            <div class="tweet_entities" ng-if="hashtags">
+               <h2>Popluar hashtags</h2>
+               <ol>
+                  <li ng-repeat="h in hashtags | limitTo: limit">#{{h.hashtag}} <span>{{h.count}} times</span></li>
+               </ol>
+               <div class="bottom">
+                  <button ng-click="incrementLimit()" type="button" class="btn btn-simple">More</button>
+                  <button ng-click="decrementLimit()" type="button" class="btn btn-simple">Less</button>
+               </div>
+            </div>
          </div>
       </div>
    </section>
