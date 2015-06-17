@@ -39,13 +39,22 @@ angular.module('nestApp')
       $root.loadingView=true;
       var defer = $q.defer();
 
-      getFollowersActivity(user.id).then(function(activityRet){
-         getFollowersEngagement(user.id).then(function(engagementRet){
-            defer.resolve();
-            $root.loadingView=false;
-            $root.firstOpen = false;
-         });
+      var promise1 = getFollowersActivity(user.id),
+          promise2 = getFollowersEngagement(user.id);
+
+      $q.all([promise1, promise2]).then(function(data){
+         defer.resolve();
+         $root.loadingView=false;
+         $root.firstOpen = false;
       });
+
+      // getFollowersActivity(user.id).then(function(activityRet){
+      //    getFollowersEngagement(user.id).then(function(engagementRet){
+      //       defer.resolve();
+      //       $root.loadingView=false;
+      //       $root.firstOpen = false;
+      //    });
+      // });
       return defer.promise;
    }
 
@@ -194,135 +203,135 @@ angular.module('nestApp')
          if(allTweets[i].created_at.days<=timeLimit &&
             allTweets[i].retweeted === false){
                rtCount+=allTweets[i].retweet_count;
-            } // If tweet is more recent than the time limit
+         } // If tweet is more recent than the time limit
+      }
+      return rtCount;
+   }
+
+   function setHashtags(timeline, timeLimit){
+      var hashtags = [];
+      for (var i = 0; i < timeline.length; i++) {
+         if (timeline[i].created_at.days<=timeLimit) {
+            for (var j = 0; j < timeline[i].entities.hashtags.length; j++) {
+               hashtags.push(timeline[i].entities.hashtags[j].text);
+            }
          }
-         return rtCount;
       }
 
-      function setHashtags(timeline, timeLimit){
-         var hashtags = [];
-         for (var i = 0; i < timeline.length; i++) {
-            if (timeline[i].created_at.days<=timeLimit) {
-               for (var j = 0; j < timeline[i].entities.hashtags.length; j++) {
-                  hashtags.push(timeline[i].entities.hashtags[j].text);
-               }
-            }
+      hashtags.sort();
+
+      function count(arr) { // count occurances
+         var o = {};
+         for (var i = 0; i < arr.length; ++i) {
+            o[arr[i]] = (o[arr[i]] || 0) + 1;
          }
-
-         hashtags.sort();
-
-         function count(arr) { // count occurances
-            var o = {};
-            for (var i = 0; i < arr.length; ++i) {
-               o[arr[i]] = (o[arr[i]] || 0) + 1;
-            }
-            o = sortProperties(o);
-            return o;
-         }
-
-         function sortProperties(obj){
-            // convert object into array
-            var sortable=[];
-            for(var key in obj){
-               if(obj.hasOwnProperty(key)){
-                  sortable.push([key, obj[key]]);
-               }
-            }
-
-            // sort items by value
-            sortable.sort(function(a, b)
-            {
-               return b[1]-a[1]; // compare numbers
-            });
-
-            var hasht = [];
-            for (var i = 0; i < sortable.length; i++) {
-               var t = {};
-               t.hashtag = sortable[i][0];
-               t.count = sortable[i][1];
-               hasht[i]=t;
-            }
-            return hasht; // array in format [ {key1 :val1 }, ... ]
-         }
-
-         $scope.hashtags = count(hashtags);
+         o = sortProperties(o);
+         return o;
       }
 
-      var limitStep = 10;
-      $scope.limit = 2*limitStep;
-      $scope.incrementLimit = function() {
-         $scope.limit += limitStep;
-         if ($scope.limit>=$scope.hashtags) {
-            $scope.disableMore=true;
+      function sortProperties(obj){
+         // convert object into array
+         var sortable=[];
+         for(var key in obj){
+            if(obj.hasOwnProperty(key)){
+               sortable.push([key, obj[key]]);
+            }
          }
-         $scope.disableLess=false;
-      };
-      $scope.decrementLimit = function() {
-         $scope.limit -= limitStep;
-         if ($scope.limit<=0) {
-            $scope.disableLess=true
+
+         // sort items by value
+         sortable.sort(function(a, b)
+         {
+            return b[1]-a[1]; // compare numbers
+         });
+
+         var hasht = [];
+         for (var i = 0; i < sortable.length; i++) {
+            var t = {};
+            t.hashtag = sortable[i][0];
+            t.count = sortable[i][1];
+            hasht[i]=t;
          }
-         $scope.disableMore=false
-      };
-
-      function processTweets(tweets){
-         // Process Tweets to get time difference
-         for (var i = 0; i < tweets.length; i++) {
-            var tweet_date = tweets[i].created_at;
-
-            tweet_date=parseTwitterDate(tweet_date);
-
-            var today = new Date();
-
-            var deltaT = today - tweet_date; //in ms
-            var dDiff = deltaT / 3600 / 1000 / 24; //in days
-            var humanReadable = {};
-            humanReadable.days = Math.floor(dDiff);
-            tweets[i].created_at=humanReadable;
-         }
-         return tweets;
+         return hasht; // array in format [ {key1 :val1 }, ... ]
       }
 
-      function processSingleTweet(tweet){
-         var tweetDate = tweet.created_at;
+      $scope.hashtags = count(hashtags);
+   }
 
-         tweetDate=parseTwitterDate(tweetDate);
+   var limitStep = 10;
+   $scope.limit = 2*limitStep;
+   $scope.incrementLimit = function() {
+      $scope.limit += limitStep;
+      if ($scope.limit>=$scope.hashtags) {
+         $scope.disableMore=true;
+      }
+      $scope.disableLess=false;
+   };
+   $scope.decrementLimit = function() {
+      $scope.limit -= limitStep;
+      if ($scope.limit<=0) {
+         $scope.disableLess=true
+      }
+      $scope.disableMore=false
+   };
+
+   function processTweets(tweets){
+      // Process Tweets to get time difference
+      for (var i = 0; i < tweets.length; i++) {
+         var tweet_date = tweets[i].created_at;
+
+         tweet_date=parseTwitterDate(tweet_date);
 
          var today = new Date();
 
-         var deltaT = today - tweetDate; //in ms
+         var deltaT = today - tweet_date; //in ms
          var dDiff = deltaT / 3600 / 1000 / 24; //in days
          var humanReadable = {};
          humanReadable.days = Math.floor(dDiff);
-         tweet.created_at=humanReadable;
-         return tweet;
+         tweets[i].created_at=humanReadable;
       }
+      return tweets;
+   }
 
-      function parseTwitterDate(date) {
-         return new Date(Date.parse(date.replace(/( +)/, ' UTC$1')));
+   function processSingleTweet(tweet){
+      var tweetDate = tweet.created_at;
+
+      tweetDate=parseTwitterDate(tweetDate);
+
+      var today = new Date();
+
+      var deltaT = today - tweetDate; //in ms
+      var dDiff = deltaT / 3600 / 1000 / 24; //in days
+      var humanReadable = {};
+      humanReadable.days = Math.floor(dDiff);
+      tweet.created_at=humanReadable;
+      return tweet;
+   }
+
+   function parseTwitterDate(date) {
+      return new Date(Date.parse(date.replace(/( +)/, ' UTC$1')));
+   }
+
+   function compareTweets(a,b) {
+      if (a.created_at.days < b.created_at.days){
+         return 1;
+      }else if (a.created_at.days > b.created_at.days){
+         return -1;
+      }else{
+         return 0;
       }
+   }
 
-      function compareTweets(a,b) {
-         if (a.created_at.days < b.created_at.days){
-            return 1;
-         }else if (a.created_at.days > b.created_at.days){
-            return -1;
-         }else{
-            return 0;
-         }
+   function compareFollowers(a,b) {
+      if (a.status.created_at.days < b.status.created_at.days){
+         return 1;
+      }else if (a.status.created_at.days > b.status.created_at.days){
+         return -1;
+      }else{
+         return 0;
       }
-
-      function compareFollowers(a,b) {
-         if (a.status.created_at.days < b.status.created_at.days){
-            return 1;
-         }else if (a.status.created_at.days > b.status.created_at.days){
-            return -1;
-         }else{
-            return 0;
-         }
-      }
+   }
 
 
 
-      initializeNest();
-   }]);
+   initializeNest();
+}]);

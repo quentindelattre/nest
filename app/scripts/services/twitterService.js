@@ -79,8 +79,8 @@ services.factory('twitterService', function($q, $timeout) {
                url=url.replace(/&cursor=[\d]*/gi, "");
                url+='&cursor='+cursor;
                console.log(url);
-               if (i<2){ // returns the last 1'000 followers for testing
-               //if (cursor!==0) { // Final condition
+               // if (i<2){ // returns the last 1'000 followers for testing
+               if (cursor!==0) { // Final condition
                   // Create promise
                   var promise = TwitterAuth.get(url);
                   promise.then(function(data){
@@ -88,7 +88,6 @@ services.factory('twitterService', function($q, $timeout) {
 
                      // Set new cursor according to last page's next_id
                      var newCursor=data.next_cursor;
-                     // console.log('new maxId: '+newMaxId);
 
                      // Update followers list with retrieved values
                      followersList=followersList.concat(data.users);
@@ -166,7 +165,7 @@ services.factory('twitterService', function($q, $timeout) {
                   url+='&max_id='+maxId;
                }
                url = url.replace(/max_id=[\d]*/g, 'max_id='+maxId);
-               if (i<2){ // i<16 to get up to 3200 last tweets
+               if (i<16){ // i<16 to get up to 3200 last tweets
 
                   // Create promise
                   var promise = TwitterAuth.get(url);
@@ -180,17 +179,17 @@ services.factory('twitterService', function($q, $timeout) {
                      timeline=timeline.concat(data);
 
                      //Check timeline's new size (should be +200)
-                     // console.log('new timeline size : '+timeline.length);
+                     console.log('new user timeline size : ', timeline.length);
 
                      // Repeat function asynchronously
                      getTweet(newMaxId);
                   }, function(err){
-                     console.log('waiting…');
-                     $timeout(getTweet, 90000);
+                     console.log('waiting…',err);
+                     $timeout(getTweet(), 90000);
                   });
                   return defer.promise;
                } else {
-                  // console.log('Final user timeline size: ', timeline.length);
+                  console.log('Final user timeline size: ', timeline.length);
 
                   // resolve main promise
                   mainDefer.resolve(timeline);
@@ -198,7 +197,7 @@ services.factory('twitterService', function($q, $timeout) {
                }
             } else {
                //Execute request for the first time
-               // console.log('run for maxId undefined');
+               console.log('user timelin run for maxId undefined');
 
                // Create promise
                var promise = TwitterAuth.get(url);
@@ -253,13 +252,13 @@ services.factory('twitterService', function($q, $timeout) {
             // console.log('run : '+i);
             // console.log('current maxId: '+maxId);
             if (maxId) {
-               // console.log('run for maxId defined: '+maxId);
+               console.log('mention run for maxId defined: '+maxId);
                if (i===1) {
                   url+='&maxId='+maxId;
                }
                url = url.replace(/maxId=[\d]*/g, 'maxId='+maxId);
                // console.log(url);
-               if (i<2){ // 16 to get up to 3200 last tweets
+               if (i<16){ // 16 to get up to 3200 last tweets
 
                   // Create promise
                   var promise = TwitterAuth.get(url);
@@ -274,7 +273,7 @@ services.factory('twitterService', function($q, $timeout) {
                      timeline=timeline.concat(data);
 
                      //Check timeline's new size (should be +200)
-                     // console.log('new timeline size : '+timeline.length);
+                     console.log('new timeline size : '+timeline.length);
 
                      // Repeat function asynchronously
                      getTweet(newMaxId);
@@ -284,7 +283,7 @@ services.factory('twitterService', function($q, $timeout) {
                   });
                   return defer.promise;
                } else {
-                  // console.log('Final timeline size: '+timeline.length);
+                  console.log('Final timeline size: '+timeline.length);
 
                   // Callback function from controller
                   mainDefer.resolve(timeline);
@@ -292,7 +291,7 @@ services.factory('twitterService', function($q, $timeout) {
                }
             } else {
                //Execute request for the first time
-               // console.log('run for maxId undefined');
+               console.log('mentions run for maxId undefined');
 
                // Create promise
                var promise = TwitterAuth.get(url);
