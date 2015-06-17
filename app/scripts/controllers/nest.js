@@ -9,12 +9,10 @@
 */
 angular.module('nestApp')
 .controller('nestCtrl',['$scope', '$rootScope', '$location', '$q', 'twitterService', 'user', function ($scope, $root, $location, $q, twitterService, user) {
-   $root.firstOpen = false;
    $scope.user=user;
 
-
    $scope.translate = function(value){
-       return value + ' days';
+      return value + ' days';
    }
 
    $scope.signOut = function() {
@@ -45,6 +43,7 @@ angular.module('nestApp')
          getFollowersEngagement(user.id).then(function(engagementRet){
             defer.resolve();
             $root.loadingView=false;
+            $root.firstOpen = false;
          });
       });
       return defer.promise;
@@ -114,14 +113,14 @@ angular.module('nestApp')
          var oldestItems = [
             //  $scope.activeFollowers[$scope.activeFollowers.length-1].status.created_at.days,
             //  $scope.mentionsTimeline[$scope.mentionsTimeline.length-1].created_at.days,
-             $scope.userTimeline[$scope.userTimeline.length-1].created_at.days
+            $scope.userTimeline[$scope.userTimeline.length-1].created_at.days
          ];
 
          $scope.timeMachine = {
-             max: 7,
-             ceil: Math.max.apply(Math, oldestItems),
+            max: 7,
+            ceil: Math.max.apply(Math, oldestItems),
             // ceil: 183, // 6 months
-             floor: 0
+            floor: 0
          };
          setStats();
       });
@@ -131,13 +130,13 @@ angular.module('nestApp')
       var userFollowersCount = user.followers_count;
 
       var   activeVal = countActiveFollower($scope.activeFollowers, $scope.timeMachine.max),
-            activeRatio = ((activeVal/userFollowersCount)*100).toFixed(1),
-            mentionsCount = countMentions($scope.mentionsTimeline, $scope.timeMachine.max),
-            rtCount = countRetweets($scope.userTimeline, $scope.timeMachine.max),
-            favCount = countFavorites($scope.userTimeline, $scope.timeMachine.max),
-            engagementVal = mentionsCount+rtCount+favCount,
-            engagementRatio = ((engagementVal/userFollowersCount)*100).toFixed(1),
-            hashtag = setHashtags($scope.userTimeline, $scope.timeMachine.max);;
+      activeRatio = ((activeVal/userFollowersCount)*100).toFixed(1),
+      mentionsCount = countMentions($scope.mentionsTimeline, $scope.timeMachine.max),
+      rtCount = countRetweets($scope.userTimeline, $scope.timeMachine.max),
+      favCount = countFavorites($scope.userTimeline, $scope.timeMachine.max),
+      engagementVal = mentionsCount+rtCount+favCount,
+      engagementRatio = ((engagementVal/userFollowersCount)*100).toFixed(1),
+      hashtag = setHashtags($scope.userTimeline, $scope.timeMachine.max);;
 
       $scope.stats= {
          active:{
@@ -167,25 +166,25 @@ angular.module('nestApp')
    }
 
    function countMentions(allTweets, timeLimit){
-         var menCount=0;
-         // Do stuff with favCount
-         for (var i = 0; i < allTweets.length; i++) {
-            if(allTweets[i].created_at.days<=timeLimit){
-               menCount++;
-            } // If tweet is more recent than the time limit
-         }
-         return menCount;
+      var menCount=0;
+      // Do stuff with favCount
+      for (var i = 0; i < allTweets.length; i++) {
+         if(allTweets[i].created_at.days<=timeLimit){
+            menCount++;
+         } // If tweet is more recent than the time limit
+      }
+      return menCount;
    }
 
    function countFavorites(allTweets, timeLimit){
-         var favCount=0;
-         // Do stuff with favCount
-         for (var i = 0; i < allTweets.length; i++) {
-            if(allTweets[i].created_at.days<=timeLimit){
-                  favCount+=allTweets[i].favorite_count;
-            } // If tweet is more recent than the time limit
-         }
-         return favCount;
+      var favCount=0;
+      // Do stuff with favCount
+      for (var i = 0; i < allTweets.length; i++) {
+         if(allTweets[i].created_at.days<=timeLimit){
+            favCount+=allTweets[i].favorite_count;
+         } // If tweet is more recent than the time limit
+      }
+      return favCount;
    }
 
    function countRetweets(allTweets, timeLimit){
@@ -195,125 +194,135 @@ angular.module('nestApp')
          if(allTweets[i].created_at.days<=timeLimit &&
             allTweets[i].retweeted === false){
                rtCount+=allTweets[i].retweet_count;
-         } // If tweet is more recent than the time limit
+            } // If tweet is more recent than the time limit
+         }
+         return rtCount;
       }
-      return rtCount;
-   }
 
-   function setHashtags(timeline, timeLimit){
-      var hashtags = [];
-      for (var i = 0; i < timeline.length; i++) {
-         if (timeline[i].created_at.days<=timeLimit) {
-            for (var j = 0; j < timeline[i].entities.hashtags.length; j++) {
-               hashtags.push(timeline[i].entities.hashtags[j].text);
+      function setHashtags(timeline, timeLimit){
+         var hashtags = [];
+         for (var i = 0; i < timeline.length; i++) {
+            if (timeline[i].created_at.days<=timeLimit) {
+               for (var j = 0; j < timeline[i].entities.hashtags.length; j++) {
+                  hashtags.push(timeline[i].entities.hashtags[j].text);
+               }
             }
          }
+
+         hashtags.sort();
+
+         function count(arr) { // count occurances
+            var o = {};
+            for (var i = 0; i < arr.length; ++i) {
+               o[arr[i]] = (o[arr[i]] || 0) + 1;
+            }
+            o = sortProperties(o);
+            return o;
+         }
+
+         function sortProperties(obj){
+            // convert object into array
+            var sortable=[];
+            for(var key in obj){
+               if(obj.hasOwnProperty(key)){
+                  sortable.push([key, obj[key]]);
+               }
+            }
+
+            // sort items by value
+            sortable.sort(function(a, b)
+            {
+               return b[1]-a[1]; // compare numbers
+            });
+
+            var hasht = [];
+            for (var i = 0; i < sortable.length; i++) {
+               var t = {};
+               t.hashtag = sortable[i][0];
+               t.count = sortable[i][1];
+               hasht[i]=t;
+            }
+            return hasht; // array in format [ {key1 :val1 }, ... ]
+         }
+
+         $scope.hashtags = count(hashtags);
       }
 
-      hashtags.sort();
+      var limitStep = 10;
+      $scope.limit = 2*limitStep;
+      $scope.incrementLimit = function() {
+         $scope.limit += limitStep;
+         if ($scope.limit>=$scope.hashtags) {
+            $scope.disableMore=true;
+         }
+         $scope.disableLess=false;
+      };
+      $scope.decrementLimit = function() {
+         $scope.limit -= limitStep;
+         if ($scope.limit<=0) {
+            $scope.disableLess=true
+         }
+         $scope.disableMore=false
+      };
 
-      function count(arr) { // count occurances
-          var o = {};
-          for (var i = 0; i < arr.length; ++i) {
-             o[arr[i]] = (o[arr[i]] || 0) + 1;
-          }
-          o = sortProperties(o);
-          return o;
+      function processTweets(tweets){
+         // Process Tweets to get time difference
+         for (var i = 0; i < tweets.length; i++) {
+            var tweet_date = tweets[i].created_at;
+
+            tweet_date=parseTwitterDate(tweet_date);
+
+            var today = new Date();
+
+            var deltaT = today - tweet_date; //in ms
+            var dDiff = deltaT / 3600 / 1000 / 24; //in days
+            var humanReadable = {};
+            humanReadable.days = Math.floor(dDiff);
+            tweets[i].created_at=humanReadable;
+         }
+         return tweets;
       }
 
-      function sortProperties(obj){
-        // convert object into array
-          var sortable=[];
-          for(var key in obj)
-              if(obj.hasOwnProperty(key))
-                  sortable.push([key, obj[key]]); // each item is an array in format [key, value]
+      function processSingleTweet(tweet){
+         var tweetDate = tweet.created_at;
 
-          // sort items by value
-          sortable.sort(function(a, b)
-          {
-            return b[1]-a[1]; // compare numbers
-          });
-
-          var hasht = [];
-          for (var i = 0; i < sortable.length; i++) {
-             var t = {};
-             t.hashtag = sortable[i][0];
-             t.count = sortable[i][1];
-             hasht[i]=t;
-          }
-          return hasht; // array in format [ {key1 :val1 }, ... ]
-      }
-
-      $scope.hashtags = count(hashtags);
-   }
-
-   var limitStep = 5;
-   $scope.limit = limitStep;
-   $scope.incrementLimit = function() {
-       $scope.limit += limitStep;
-   };
-   $scope.decrementLimit = function() {
-       $scope.limit -= limitStep;
-   };
-
-   function processTweets(tweets){
-      // Process Tweets to get time difference
-      for (var i = 0; i < tweets.length; i++) {
-         var tweet_date = tweets[i].created_at;
-
-         tweet_date=parseTwitterDate(tweet_date);
+         tweetDate=parseTwitterDate(tweetDate);
 
          var today = new Date();
 
-         var deltaT = today - tweet_date; //in ms
+         var deltaT = today - tweetDate; //in ms
          var dDiff = deltaT / 3600 / 1000 / 24; //in days
          var humanReadable = {};
          humanReadable.days = Math.floor(dDiff);
-         tweets[i].created_at=humanReadable;
+         tweet.created_at=humanReadable;
+         return tweet;
       }
-      return tweets;
-   }
 
-   function processSingleTweet(tweet){
-      var tweetDate = tweet.created_at;
+      function parseTwitterDate(date) {
+         return new Date(Date.parse(date.replace(/( +)/, ' UTC$1')));
+      }
 
-      tweetDate=parseTwitterDate(tweetDate);
+      function compareTweets(a,b) {
+         if (a.created_at.days < b.created_at.days){
+            return 1;
+         }else if (a.created_at.days > b.created_at.days){
+            return -1;
+         }else{
+            return 0;
+         }
+      }
 
-      var today = new Date();
-
-      var deltaT = today - tweetDate; //in ms
-      var dDiff = deltaT / 3600 / 1000 / 24; //in days
-      var humanReadable = {};
-      humanReadable.days = Math.floor(dDiff);
-      tweet.created_at=humanReadable;
-      return tweet;
-   }
-
-   function parseTwitterDate(date) {
-      return new Date(Date.parse(date.replace(/( +)/, ' UTC$1')));
-   }
-
-   function compareTweets(a,b) {
-     if (a.created_at.days < b.created_at.days){
-        return 1;
-     }else if (a.created_at.days > b.created_at.days){
-        return -1;
-     }else{
-        return 0;
-     }
-   }
-
-   function compareFollowers(a,b) {
-     if (a.status.created_at.days < b.status.created_at.days){
-        return 1;
-     }else if (a.status.created_at.days > b.status.created_at.days){
-        return -1;
-     }else{
-        return 0;
-     }
-   }
+      function compareFollowers(a,b) {
+         if (a.status.created_at.days < b.status.created_at.days){
+            return 1;
+         }else if (a.status.created_at.days > b.status.created_at.days){
+            return -1;
+         }else{
+            return 0;
+         }
+      }
 
 
 
-   initializeNest();
-}]);
+      initializeNest();
+   }]);

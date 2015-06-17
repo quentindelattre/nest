@@ -60,11 +60,13 @@
             <div class="tweet_entities" ng-if="hashtags">
                <h2>Popluar hashtags</h2>
                <ol>
-                  <li ng-repeat="h in hashtags | limitTo: limit">#{{h.hashtag}} <span>{{h.count}} times</span></li>
+                  <li ng-repeat="h in hashtags | limitTo: limit | orderBy : '-count'">
+                     <a href="https://twitter.com/hashtag/{{h.hashtag}}?src=hash" target="_blank">
+                     #{{h.hashtag}}</a> <span>{{h.count}} times</span></li>
                </ol>
                <div class="bottom">
-                  <button ng-click="incrementLimit()" type="button" class="btn btn-simple">More</button>
-                  <button ng-click="decrementLimit()" type="button" class="btn btn-simple">Less</button>
+                  <button ng-click="incrementLimit()" ng-disabled="disableMore" type="button" class="btn btn-simple">More</button>
+                  <button ng-click="decrementLimit()" ng-disabled="disableLess" type="button" class="btn btn-simple">Less</button>
                </div>
             </div>
          </div>

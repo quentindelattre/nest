@@ -142,16 +142,27 @@
                right: 0;
                height: 100%;
                padding-top: 80px;
-               width: 284.59px;
+               width: 286px;
                border-left: 1px solid #e5e5e5;
                h2{
                   font-size: 18px;
                   text-align: center;
                }
                ol{
-                  
+                  font-weight: 300;
+                  padding: 0 35px 0 60px;
+                  margin: 25px 0 0;
+                  height: 70vh;
+                  overflow-y: scroll;
                   li{
-
+                     margin: 5px 0;
+                     font-style: italic;
+                     text-align: left;
+                     span{
+                        float: right;
+                        font-size: smaller;
+                        font-style: normal;
+                     }
                   }
                }
                .bottom{

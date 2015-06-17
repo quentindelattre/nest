@@ -44,7 +44,7 @@ services.factory('twitterService', function($q, $timeout) {
             }, function(err){
                // If session has expired
                console.log('waiting...');
-               $timeout(getAuthUser, 180000); // Wait 15 minutes for new session
+               $timeout(getAuthUser, 90000); // Wait 15 minutes for new session
             });
          }
          getAuthUser();
@@ -98,7 +98,7 @@ services.factory('twitterService', function($q, $timeout) {
                   }, function(err){
                      // If session has expired
                      console.log('waiting...');
-                     $timeout(getFollowers, 180000); // Wait 3 minutes and try again
+                     $timeout(getFollowers, 90000); // Wait 3 minutes and try again
                   });
                } else {
                   console.log('Game over', followersList.length);
@@ -125,7 +125,7 @@ services.factory('twitterService', function($q, $timeout) {
                   getFollowers(cursor);
                }, function(err){
                   console.log('waiting...');
-                  $timeout(getFollowers, 180000); // Wait 15 minutes for new session
+                  $timeout(getFollowers, 90000); // Wait 15 minutes for new session
                });
                return defer.promise;
             }
@@ -186,7 +186,7 @@ services.factory('twitterService', function($q, $timeout) {
                      getTweet(newMaxId);
                   }, function(err){
                      console.log('waiting…');
-                     $timeout(getTweet, 180000);
+                     $timeout(getTweet, 90000);
                   });
                   return defer.promise;
                } else {
@@ -216,7 +216,7 @@ services.factory('twitterService', function($q, $timeout) {
                   getTweet(maxId);
                }, function(err){
                   console.log('waiting…');
-                  $timeout(getTweet, 180000);
+                  $timeout(getTweet, 90000);
                });
                return defer.promise;
             }
@@ -280,7 +280,7 @@ services.factory('twitterService', function($q, $timeout) {
                      getTweet(newMaxId);
                   }, function(err){
                      console.log('waiting…');
-                     $timeout(getTweet, 180000);
+                     $timeout(getTweet, 90000);
                   });
                   return defer.promise;
                } else {
@@ -309,7 +309,7 @@ services.factory('twitterService', function($q, $timeout) {
                   getTweet(maxId);
                }, function(err){
                   console.log('waiting…');
-                  $timeout(getTweet, 180000);
+                  $timeout(getTweet, 90000);
                });
                return defer.promise;
             }
