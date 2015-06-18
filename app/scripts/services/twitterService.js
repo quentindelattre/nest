@@ -44,7 +44,7 @@ services.factory('twitterService', function($q, $timeout) {
             }, function(err){
                // If session has expired
                console.log('waiting...');
-               $timeout(getAuthUser, 90000); // Wait 15 minutes for new session
+               $timeout(getAuthUser, 900000); // Wait 15 minutes for new session
             });
          }
          getAuthUser();
@@ -97,7 +97,7 @@ services.factory('twitterService', function($q, $timeout) {
                   }, function(err){
                      // If session has expired
                      console.log('waiting...');
-                     $timeout(getFollowers, 90000); // Wait 3 minutes and try again
+                     $timeout(getFollowers, 900000); // Wait 3 minutes and try again
                   });
                } else {
                   console.log('Game over', followersList.length);
@@ -124,7 +124,7 @@ services.factory('twitterService', function($q, $timeout) {
                   getFollowers(cursor);
                }, function(err){
                   console.log('waiting...');
-                  $timeout(getFollowers, 90000); // Wait 15 minutes for new session
+                  $timeout(getFollowers, 900000); // Wait 15 minutes for new session
                });
                return defer.promise;
             }
@@ -165,7 +165,7 @@ services.factory('twitterService', function($q, $timeout) {
                   url+='&max_id='+maxId;
                }
                url = url.replace(/max_id=[\d]*/g, 'max_id='+maxId);
-               if (i<16){ // i<16 to get up to 3200 last tweets
+               if (i<3){ // i<16 to get up to 3200 last tweets
 
                   // Create promise
                   var promise = TwitterAuth.get(url);
@@ -185,7 +185,7 @@ services.factory('twitterService', function($q, $timeout) {
                      getTweet(newMaxId);
                   }, function(err){
                      console.log('waiting…',err);
-                     $timeout(getTweet(), 90000);
+                     $timeout(getTweet(), 900000);
                   });
                   return defer.promise;
                } else {
@@ -215,7 +215,7 @@ services.factory('twitterService', function($q, $timeout) {
                   getTweet(maxId);
                }, function(err){
                   console.log('waiting…');
-                  $timeout(getTweet, 90000);
+                  $timeout(getTweet, 900000);
                });
                return defer.promise;
             }
@@ -258,7 +258,7 @@ services.factory('twitterService', function($q, $timeout) {
                }
                url = url.replace(/maxId=[\d]*/g, 'maxId='+maxId);
                // console.log(url);
-               if (i<16){ // 16 to get up to 3200 last tweets
+               if (i<3){ // 16 to get up to 3200 last tweets
 
                   // Create promise
                   var promise = TwitterAuth.get(url);
@@ -279,7 +279,7 @@ services.factory('twitterService', function($q, $timeout) {
                      getTweet(newMaxId);
                   }, function(err){
                      console.log('waiting…');
-                     $timeout(getTweet, 90000);
+                     $timeout(getTweet, 900000);
                   });
                   return defer.promise;
                } else {
@@ -308,7 +308,7 @@ services.factory('twitterService', function($q, $timeout) {
                   getTweet(maxId);
                }, function(err){
                   console.log('waiting…');
-                  $timeout(getTweet, 90000);
+                  $timeout(getTweet, 900000);
                });
                return defer.promise;
             }

@@ -24,9 +24,14 @@
                         <li>{{stats.active.val}}</li>
                         <li>{{stats.active.ratio}}%</li>
                      </ul>
+                     <ul class="followers_details">
+                        <li><span class="glyphicon glyphicon-alert"></span>{{fStats.fSpam}}<span class="ftooltip">Maybe robots</span></li>
+                        <li><span class="glyphicon glyphicon-user"></span>{{fStats.fUser}}<span class="ftooltip">Standard users</span></li>
+                        <li><span class="glyphicon glyphicon-ok-sign"></span>{{fStats.fVerif}}<span class="ftooltip">Verified accounts</span></li>
+                     </ul>
                   </li>
                   <li>
-                     Engaged followers in the last {{timeMachine.max}} days
+                     Engagement over the last {{timeMachine.max}} days
                      <ul class="engagement">
                         <li>{{stats.engaged.val}}</li>
                         <li>{{stats.engaged.ratio}}%</li>
@@ -39,8 +44,8 @@
                   </li>
                </ul>
             </div>
-            <!-- <div class="bottom" ng-if="stats"> -->
-            <div class="bottom">
+            <div class="bottom" ng-if="stats">
+            <!-- <div class="bottom"> -->
                <button ng-click="signOut()" id="signOut" type="button" class="btn btn-danger">Sign Out</button>
                <button ng-click="refresh()" id="refresh" type="button" class="btn btn-simple">Refresh</button>
             </div>

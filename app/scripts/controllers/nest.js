@@ -47,14 +47,6 @@ angular.module('nestApp')
          $root.loadingView=false;
          $root.firstOpen = false;
       });
-
-      // getFollowersActivity(user.id).then(function(activityRet){
-      //    getFollowersEngagement(user.id).then(function(engagementRet){
-      //       defer.resolve();
-      //       $root.loadingView=false;
-      //       $root.firstOpen = false;
-      //    });
-      // });
       return defer.promise;
    }
 
@@ -107,10 +99,26 @@ angular.module('nestApp')
 
    function processFollowers(followers){
       var activeFollowers=[];
+      $scope.fStats={
+         fSpam:0,
+         fUser:0,
+         fVerif:0
+      };
       for (var i = 0; i < followers.length; i++) {
          if (followers[i].status) {
             followers[i].status=processSingleTweet(followers[i].status);
             activeFollowers.push(followers[i]);
+         }
+         var defaultProfile = followers[i].default_profile,
+             defaultProfileImage = followers[i].default_profile_image,
+             ffRatio = followers[i].followers_count/followers[i].friends_count;
+         if (defaultProfileImage && defaultProfile && ffRatio < 0.02) {
+            $scope.fStats.fSpam++;
+         }else if (followers[i].tweet_count !== 0) {
+            $scope.fStats.fUser++;
+         }
+         if (followers[i].verified) {
+            $scope.fStats.fVerif++;
          }
       }
       activeFollowers.reverse(activeFollowers.sort(compareFollowers));
@@ -119,15 +127,11 @@ angular.module('nestApp')
 
    function initializeNest(){
       getValues(user).then(function(){
-         var oldestItems = [
-            //  $scope.activeFollowers[$scope.activeFollowers.length-1].status.created_at.days,
-            //  $scope.mentionsTimeline[$scope.mentionsTimeline.length-1].created_at.days,
-            $scope.userTimeline[$scope.userTimeline.length-1].created_at.days
-         ];
+         var oldestUserTweet = $scope.userTimeline[$scope.userTimeline.length-1].created_at.days;
 
          $scope.timeMachine = {
             max: 7,
-            ceil: Math.max.apply(Math, oldestItems),
+            ceil: oldestUserTweet,
             // ceil: 183, // 6 months
             floor: 0
          };
@@ -160,7 +164,18 @@ angular.module('nestApp')
             ratio    :  engagementRatio
          }
       };
+
+      setVenn($scope.stats);
    };
+
+   function setVenn(stats){
+      var sets = [ {sets:['A'], size: user.followers_count},
+                   {sets:['B'], size: stats.active.val},
+                   {sets:['C'], size: stats.engaged.val},
+                   {sets:['A','B'], size: stats.active.val},
+                   {sets:['B','C'], size: stats.engaged.val}];
+      $scope.sets = sets;
+   }
 
    function countActiveFollower(followers, timeLimit){
       var followerCount = 0;
@@ -255,6 +270,10 @@ angular.module('nestApp')
       }
 
       $scope.hashtags = count(hashtags);
+      if ($scope.hashtags===0) {
+         $scope.disableMore=true;
+         $scope.disableLess=true;
+      }
    }
 
    var limitStep = 10;
@@ -269,9 +288,9 @@ angular.module('nestApp')
    $scope.decrementLimit = function() {
       $scope.limit -= limitStep;
       if ($scope.limit<=0) {
-         $scope.disableLess=true
+         $scope.disableLess=true;
       }
-      $scope.disableMore=false
+      $scope.disableMore=false;
    };
 
    function processTweets(tweets){
