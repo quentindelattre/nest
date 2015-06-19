@@ -37,6 +37,9 @@ angular.module('nestApp')
 
    function getValues (user){
       $root.loadingView=true;
+      $root.acquFollowers = 'repeat';
+      $root.acquUserTimeline = 'repeat';
+      $root.acquMentions = 'repeat';
       var defer = $q.defer();
 
       var promise1 = getFollowersActivity(user.id),
@@ -52,8 +55,10 @@ angular.module('nestApp')
 
    function getFollowersActivity(usrId){
       var defer = $q.defer();
+      $root.totalFollowers = user.followers_count;
       var promise = twitterService.getFollowersActivity(usrId).then(function(data){
          $scope.activeFollowers=processFollowers(data);
+         $root.acquFollowers = 'ok';
          defer.resolve(data);
       })
       return defer.promise;
@@ -76,6 +81,7 @@ angular.module('nestApp')
       var defer = $q.defer();
       var userTimelinePromise = twitterService.getUserTimeline(usrId).then(function(timelineData){
          $scope.userTimeline = processTimeline(timelineData);
+         $root.acquUserTimeline = 'ok';
          defer.resolve(timelineData);
       });
       return defer.promise;
@@ -86,6 +92,7 @@ angular.module('nestApp')
       var defer = $q.defer();
       var userMentionsPromise = twitterService.getMentionsTimeline().then(function(mentionsData){
          $scope.mentionsTimeline = processTimeline(mentionsData);
+         $root.acquMentions = 'ok';
          defer.resolve(mentionsData);
       });
       return defer.promise;

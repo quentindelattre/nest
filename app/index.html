@@ -29,6 +29,14 @@
       <div class="loader">
          Loading<span class="dot">.</span>
       </div>
+      <div class="nest_progress">
+         <ul>
+            <li><span class="glyphicon glyphicon-{{acquFollowers}}"></span>Scanning {{progressFollowers}} out of {{totalFollowers}} followers…<br/></li>
+            <li><span class="glyphicon glyphicon-{{acquUserTimeline}}"></span>Scanning your timeline…</li>
+            <li><span class="glyphicon glyphicon-{{acquMentions}}"></span>Scanning mentions of you…</li>
+            <li><span class="time_remaining">~{{remaining.h}}h{{remaining.m}}m remaining</span></li>
+         </ul>
+      </div>
       <div class="tuto" ng-if="firstOpen">
          <p class="sidebar">
             <span>1</span>

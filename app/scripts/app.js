@@ -49,12 +49,15 @@ angular
       if (curr.$$route && curr.$$route.resolve) {
          // Show a loading message until promises are not resolved
          $root.loadingView = true;
+         $root.acquFollowers = 'repeat';
+         $root.acquUserTimeline = 'repeat';
+         $root.acquMentions = 'repeat';
       }
    });
 
    $root.$on('$routeChangeSuccess', function(e, curr, prev) {
       // Hide loading message
-      // $root.loadingView = false;
+      $root.loadingView = false;
    });
 
 }]);

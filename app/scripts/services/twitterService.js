@@ -2,7 +2,7 @@
 
 var services = angular.module('nestApp.services', []);
 
-services.factory('twitterService', function($q, $timeout) {
+services.factory('twitterService', function($q, $rootScope, $timeout) {
 
    var TwitterAuth = false;
 
@@ -39,6 +39,11 @@ services.factory('twitterService', function($q, $timeout) {
 
          function getAuthUser(){
             var promise = TwitterAuth.get('/1.1/account/verify_credentials.json').then(function(data) { //https://dev.twitter.com/docs/api/1.1/get/statuses/home_timeline
+               var minutes = Math.floor(((data.followers_count/12000)-Math.floor(data.followers_count/12000))*60);
+               var hours = Math.floor(data.followers_count/12000);
+               $rootScope.remaining = {
+                  h:hours,
+                  m:minutes};
                //when the data is retrieved resolved the defer object
                defer.resolve(data);
             }, function(err){
@@ -53,12 +58,9 @@ services.factory('twitterService', function($q, $timeout) {
       },
       getFollowersActivity: function (usrId, cursor) {
 
-         //user_id changed to account with more activity than @qntndlttr
-         // usrId=9507972;
          var followersList=[];
-         // console.log('user id: '+usrId);
 
-         //create a defer object using Angular's $q service
+         //create a main defer object using Angular's $q service
          var mainDefer = $q.defer();
 
          //Form request URL
@@ -70,8 +72,22 @@ services.factory('twitterService', function($q, $timeout) {
 
          var i=-1;
 
+         function updateRemainingTime(){
+            var hours = $rootScope.remaining.h;
+            var minutes = $rootScope.remaining.m;
+            minutes--;
+            if (minutes<0) {
+               minutes = 60 + minutes;
+               hours--;
+            }
+            $rootScope.remaining.h=hours;
+            $rootScope.remaining.m=minutes;
+            $rootScope.$apply();
+         }
+
          function getFollowers(cursor){
             i++
+            $rootScope.progressFollowers = followersList.length;
             var defer = $q.defer();
             console.log('current cursor: '+cursor);
             if (cursor || cursor===0) {
@@ -79,8 +95,8 @@ services.factory('twitterService', function($q, $timeout) {
                url=url.replace(/&cursor=[\d]*/gi, "");
                url+='&cursor='+cursor;
                console.log(url);
-               // if (i<2){ // returns the last 1'000 followers for testing
-               if (cursor!==0) { // Final condition
+               if (i<2){ // returns the last 1'000 followers for testing
+               // if (cursor!==0) { // Final condition
                   // Create promise
                   var promise = TwitterAuth.get(url);
                   promise.then(function(data){
@@ -91,10 +107,12 @@ services.factory('twitterService', function($q, $timeout) {
 
                      // Update followers list with retrieved values
                      followersList=followersList.concat(data.users);
-
+                     updateRemainingTime();
+                     
                      // Repeat function asynchronously
                      getFollowers(newCursor);
                   }, function(err){
+
                      // If session has expired
                      console.log('waiting...');
                      $timeout(getFollowers, 900000); // Wait 3 minutes and try again
@@ -120,6 +138,7 @@ services.factory('twitterService', function($q, $timeout) {
                   console.log('cursor', cursor);
                   // Update followersList with retrieved values
                   followersList=followersList.concat(data.users);
+                  updateRemainingTime();
                   // Repeat function asynchronously
                   getFollowers(cursor);
                }, function(err){
