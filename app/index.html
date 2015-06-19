@@ -39,7 +39,7 @@
     <div class="nest_progress">
       <ul>
         <li>
-          <span class="glyphicon glyphicon-{{acquFollowers}}"></span>Scanning {{progressFollowers}} out of {{totalFollowers}} followers…
+          <span class="glyphicon glyphicon-{{acquFollowers}}"></span>Scanning {{progressFollowers}} out of {{totalFollowers | number}} followers…
           <br/>
         </li>
         <li>
@@ -90,7 +90,7 @@
     <script src="bower_components/angularjs-slider/rzslider.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
-
+    <script src="bower_components/angular-i18n/angular-locale_fr-ch.js"></script>
     <script src="bower_components/oauthio/app/js/oauth.min.js"></script>
     <script src="bower_components/oauthio/app/js/oauth.js"></script>
     <!-- build:js({.tmp,app}) scripts/scripts.js -->

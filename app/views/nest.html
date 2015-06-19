@@ -15,37 +15,37 @@
           <li>
             Total followers
             <ul>
-              <li>{{user.followers_count}}</li>
+              <li>{{user.followers_count | number}}</li>
             </ul>
           </li>
           <li>
             Active followers in the last {{timeMachine.max}} days
             <ul>
-              <li>{{stats.active.val}}</li>
+              <li>{{stats.active.val | number}}</li>
               <li>{{stats.active.ratio}}%</li>
             </ul>
             <ul class="followers_details">
               <li>
-                <span class="glyphicon glyphicon-alert"></span>{{fStats.fSpam}}<span class="ftooltip">Maybe robots</span></li>
+                <span class="glyphicon glyphicon-alert"></span>{{fStats.fSpam | number}}<span class="ftooltip">Maybe robots</span></li>
               <li>
-                <span class="glyphicon glyphicon-user"></span>{{fStats.fUser}}<span class="ftooltip">Standard users</span></li>
+                <span class="glyphicon glyphicon-user"></span>{{fStats.fUser | number}}<span class="ftooltip">Standard users</span></li>
               <li>
-                <span class="glyphicon glyphicon-ok-sign"></span>{{fStats.fVerif}}<span class="ftooltip">Verified accounts</span></li>
+                <span class="glyphicon glyphicon-ok-sign"></span>{{fStats.fVerif | number}}<span class="ftooltip">Verified accounts</span></li>
             </ul>
           </li>
           <li>
             Engagement over the last {{timeMachine.max}} days
             <ul class="engagement">
-              <li>{{stats.engaged.val}}</li>
+              <li>{{stats.engaged.val | number}}</li>
               <li>{{stats.engaged.ratio}}%</li>
             </ul>
             <ul class="stats_details">
               <li>
-                <span class="glyphicon glyphicon-retweet"></span>{{stats.engaged.retweets}}</li>
+                <span class="glyphicon glyphicon-retweet"></span>{{stats.engaged.retweets | number}}</li>
               <li>
-                <span class="glyphicon glyphicon-star"></span>{{stats.engaged.favorite}}</li>
+                <span class="glyphicon glyphicon-star"></span>{{stats.engaged.favorite | number}}</li>
               <li>
-                <span class="glyphicon glyphicon-share-alt"></span>{{stats.engaged.mentions}}</li>
+                <span class="glyphicon glyphicon-share-alt"></span>{{stats.engaged.mentions | number}}</li>
             </ul>
           </li>
         </ul>
