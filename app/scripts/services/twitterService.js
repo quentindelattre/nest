@@ -84,9 +84,16 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             var hours = $rootScope.remaining.h;
             var minutes = $rootScope.remaining.m;
             minutes--;
-            if (minutes < 0) {
-               minutes = 60 + minutes;
-               hours--;
+            if (hours>0) {
+               if (minutes < 0) {
+                  minutes = 60 + minutes;
+                  hours--;
+               }
+            }else{
+               if (minutes<0) {
+                  minutes=0;
+                  hours=0;
+               }
             }
             $rootScope.remaining.h = hours;
             $rootScope.remaining.m = minutes;
@@ -158,7 +165,13 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
       });
       return mainDefer.promise;
    },
-   getUserTimeline: function(usrId, maxId) {
+   getUserTimeline: function(usr, maxId) {
+      var usrId = usr.id;
+      var statusesCount = usr.statuses_count;
+      var loops = Math.ceil(statusesCount/200);
+      if (loops>16) {
+         loops=16;
+      }
       // Initiate empty array to collect user's tweets
       var timeline = [];
       //create a defer object using Angular's $q service
@@ -178,7 +191,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Replace cursor in URL query params with new cursor
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
-            if (i < 16) { // 16 to get up to 3200 last tweets
+            if (i < loops) { // 16 to get up to 3200 last tweets
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {

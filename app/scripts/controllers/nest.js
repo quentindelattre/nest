@@ -81,8 +81,8 @@ angular.module('nestApp')
       // Create deferred object
       var defer = $q.defer();
       // The two promises can be executed in parallel
-      var promise1 = getFollowersActivity(user.id),
-      promise2 = getFollowersEngagement(user.id);
+      var promise1 = getFollowersActivity(user),
+      promise2 = getFollowersEngagement(user);
       // When all of them have been resolved
       $q.all([promise1, promise2]).then(function(data) {
          defer.resolve();
@@ -92,10 +92,10 @@ angular.module('nestApp')
       });
       return defer.promise;
    }
-   function getFollowersActivity(usrId) {
+   function getFollowersActivity(usr) {
       console.log('Calling followers activity');
       var defer = $q.defer();
-      var promise = twitterService.getFollowersActivity(usrId).then(function(data) {
+      var promise = twitterService.getFollowersActivity(usr.id).then(function(data) {
          // Send retrieved values to be processed
          $scope.activeFollowers = processFollowers(data);
          // Switch glyphicon to a check
@@ -105,23 +105,23 @@ angular.module('nestApp')
       })
       return defer.promise;
    }
-   function getFollowersEngagement(usrId) {
+   function getFollowersEngagement(usr) {
       console.log('Calling followers engagement');
       var defer = $q.defer();
       $q.all([
          // Send both promises in parallel to be resolved
-         getUserTimeline(usrId),
+         getUserTimeline(usr),
          getUserMentions()
       ]).then(function() {
          defer.resolve();
       });
       return defer.promise;
    }
-   function getUserTimeline(usrId) {
+   function getUserTimeline(usr) {
       console.log('Calling getUserTimeline');
       var defer = $q.defer();
       // Call twitterService and execute promise
-      var userTimelinePromise = twitterService.getUserTimeline(usrId).then(function(timelineData) {
+      var userTimelinePromise = twitterService.getUserTimeline(usr).then(function(timelineData) {
          $scope.userTimeline = processTimeline(timelineData);
          // Switch glyphicon to a check
          $root.acquUserTimeline = 'ok';
@@ -228,7 +228,7 @@ angular.module('nestApp')
          sets: ['B', 'C'],
          size: stats.engaged.val
       }];
-      $scope.sets = sets;
+      $scope.vennData = sets;
    }
    function countActiveFollower(followers, timeLimit) {
       var followerCount = 0;

@@ -59,5 +59,4 @@ angular
   }]);
 // setup dependency injection
 angular.module('d3', []);
-angular.module('nestApp.controllers', []);
 angular.module('nestApp.directives', ['d3']);
