@@ -68,9 +68,10 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             };
          }
       },
-      getFollowersActivity: function(usrId, cursor) {
+      getFollowersActivity: function(usr, cursor) {
          // Initiate empty array that will contain the user's followers
          var followersList = [];
+         var usrId = usr.id;
          //create a main defer object using Angular's $q service
          var mainDefer = $q.defer();
          //Form request URL
@@ -111,7 +112,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                url = url.replace(/&cursor=[\d]*/gi, "");
                url += '&cursor=' + cursor;
                // console.log(url); // For dev purposes
-               // if (i < 10) { // returns the last 1'000 followers for testing
+               // if (i < 4) { // dev
                if (cursor!==0) { // Final condition
                // Create promise
                var promise = TwitterAuth.get(url);
@@ -150,8 +151,14 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                followersList = followersList.concat(data.users);
                // Update timer
                updateRemainingTime();
-               // Repeat function asynchronously
-               getFollowers(cursor);
+               // Repeat function asynchronously if user has more than 200 followers
+               if (usr.followers_count>200) {
+                  getFollowers(cursor);
+               } else {
+                  // Otherwise, resolve main pormise
+                  mainDefer.resolve(followersList);
+                  return defer.promise;
+               }
             }, function(err) {
                console.log('waiting...');
                $timeout(getFollowers, 300000); // Wait 5 minutes for new session
@@ -161,7 +168,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
       }
       getFollowers();
       mainDefer.promise.then(function(data) {
-         console.log('get followers activity success'); // For dev purposes
+         console.log('get followers activity success', data.length); // For dev purposes
       });
       return mainDefer.promise;
    },
@@ -192,6 +199,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
             if (i < loops) { // 16 to get up to 3200 last tweets
+            // if (i < 2) { // dev
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
@@ -257,7 +265,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Replace cursor in URL query params with new cursor
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
-            if (i < 2) { // 4 to get up to 800 last tweets
+            if (i < 6) { // 4 to get up to 800 last tweets
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {

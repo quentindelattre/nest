@@ -95,7 +95,7 @@ angular.module('nestApp')
    function getFollowersActivity(usr) {
       console.log('Calling followers activity');
       var defer = $q.defer();
-      var promise = twitterService.getFollowersActivity(usr.id).then(function(data) {
+      var promise = twitterService.getFollowersActivity(usr).then(function(data) {
          // Send retrieved values to be processed
          $scope.activeFollowers = processFollowers(data);
          // Switch glyphicon to a check
@@ -213,19 +213,25 @@ angular.module('nestApp')
    };
    function setVenn(stats) {
       var sets = [{
-         sets: ['A'],
+         sets: ['Total'],
          size: user.followers_count
       }, {
-         sets: ['B'],
+         sets: ['Active'],
          size: stats.active.val
       }, {
-         sets: ['C'],
+         sets: ['Engaged'],
          size: stats.engaged.val
       }, {
-         sets: ['A', 'B'],
+         sets: ['Total', 'Active'],
          size: stats.active.val
       }, {
-         sets: ['B', 'C'],
+         sets: ['Total', 'Engaged'],
+         size: stats.engaged.val
+      }, {
+         sets: ['Active', 'Engaged'],
+         size: stats.engaged.val
+      }, {
+         sets: ['Total', 'Active', 'Engaged'],
          size: stats.engaged.val
       }];
       $scope.vennData = sets;

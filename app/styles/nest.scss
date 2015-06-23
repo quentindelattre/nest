@@ -161,6 +161,18 @@
                height: 100%;
                padding-top: 80px;
                width: 80%;
+               .venn-intersection{
+                  display: none;
+               }
+               .venn-sets-A{
+                  z-index: 90;
+               }
+               .venn-sets-B{
+                  z-index: 100;
+               }
+               .venn-sets-C{
+                  z-index: 110;
+               }
             }
             .tweet_entities{
                position: absolute;
