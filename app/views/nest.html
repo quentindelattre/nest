@@ -50,6 +50,16 @@
           </li>
         </ul>
       </div>
+      <div class="latest_tweet">
+         <h4>Latest tweet <span>{{user.status.created_at|twitterDate}}</span></h4>
+         <p>
+            «{{user.status.text}}»
+         </p>
+         <ul class="stats_details">
+            <li><span class="glyphicon glyphicon-retweet"></span>{{user.status.retweet_count | number}}</li>
+            <li><span class="glyphicon glyphicon-star"></span>{{user.status.favorite_count | number}}</li>
+         </ul>
+      </div>
       <!-- <div class="bottom" ng-if="stats"> -->
       <div class="bottom">
         <button class="btn btn-danger" id="signOut" ng-click="signOut()" type="button">Sign Out</button>

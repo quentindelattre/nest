@@ -375,4 +375,13 @@ angular.module('nestApp')
       }
       // Call initialization function
       initializeNest();
-   }]);
+   }])
+.filter('twitterDate', function() {
+  return function(input) {
+    input = input || '';
+    var tDate = new Date(input);
+    var out = "";
+    out=tDate.toLocaleString().replace(/:\d+ UTC\+.$/gi, "");
+    return out;
+  };
+});

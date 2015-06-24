@@ -115,6 +115,42 @@
                }
             }
          }
+         .latest_tweet{
+            padding: 15px;
+            border: 1px solid #e5e5e5;
+            background: rgba(0, 0, 0, 0.1);
+            h4{
+               text-align: center;
+               font-size: 15px;
+               span{
+                  font-style: italic;
+                  font-weight: 200;
+                  font-size: 12px;
+                  opacity: 0.7;
+               }
+            }
+            p{
+               font-weight: 300;
+            }
+            .stats_details{
+               width: 50%;
+               list-style: none;
+               display: inline-block;
+               padding: 0;
+               margin: 0 25%;
+               li{
+                  .glyphicon{
+                     padding-right: 10px;
+                  }
+                  float: left;
+                  position: relative;
+                  margin: 0 15px;
+                  text-align: center;
+                  font-size: 13px;
+                  font-weight: 300;
+               }
+            }
+         }
          .bottom{
             position: absolute;
             display: block;
