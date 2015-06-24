@@ -69,6 +69,7 @@ angular.module('nestApp')
          };
          // Calculate stats
          setStats();
+         setBarData();
       });
    }
    function getValues(user) {
@@ -165,11 +166,11 @@ angular.module('nestApp')
             followers[i].status = processSingleTweet(followers[i].status);
             activeFollowers.push(followers[i]);
          }
-         // If follower has a pristine default and follows way more people than is followed by (following 10'000 accounts and is followed by 20), it is likely to be a bot or spam account
+         // If follower has a pristine default account and follows way more people than is followed by (following 10'000 accounts and is followed by 20), it is likely to be a bot or spam account
          var defaultProfile = followers[i].default_profile,
          defaultProfileImage = followers[i].default_profile_image,
          ffRatio = followers[i].followers_count / followers[i].friends_count;
-         if (defaultProfileImage && defaultProfile && ffRatio < 0.02) {
+         if (defaultProfileImage && defaultProfile && ffRatio < 0.01) {
             $scope.fStats.fSpam++;
          } else if (followers[i].tweet_count !== 0) {
             // If user has tweeted at least once and modified his default account, it is considered a regular user
@@ -211,6 +212,29 @@ angular.module('nestApp')
       // Send data to be visualized in venn diagram
       setVenn($scope.stats);
    };
+   function setBarData(){
+      var userTimeline = $scope.userTimeline,
+         tMax = $scope.timeMachine.ceil,
+         favCount = 0,
+         rtCount = 0,
+         prevFavCount = 0,
+         prevRtCount = 0,
+         barData = [];
+      // Get engagement statistics for each day in the time machine
+      for (var i = 0; i < tMax; i++) {
+         rtCount = countRetweets(userTimeline, i)-prevRtCount;
+         favCount = countFavorites(userTimeline, i)-prevFavCount;
+         var newData = {
+            day:  i,
+            retweets:   rtCount,
+            favorites:  favCount
+         };
+         barData.push(newData);
+         prevRtCount=rtCount;
+         prevFavCount=favCount;
+      }
+      $scope.barData=barData;
+   }
    function setVenn(stats) {
       var sets = [{
          sets: ['Total'],
@@ -235,6 +259,14 @@ angular.module('nestApp')
          size: stats.engaged.val
       }];
       $scope.vennData = sets;
+   }
+   function getTweetForDay(d, userTimeline){
+      var dayTweets = [];
+      for (var i = 0; i < d; i++) {
+         if (userTimeline[i].created_at.days===d) {
+            dayTweets.push(userTimeline[i]);
+         }
+      }
    }
    function countActiveFollower(followers, timeLimit) {
       var followerCount = 0;

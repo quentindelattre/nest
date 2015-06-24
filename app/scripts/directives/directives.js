@@ -79,7 +79,7 @@ angular.module('nestApp.directives')
                 "use strict";
                 venn.VennDiagram = function() {
                     var width = 1200,
-                        height = 950,
+                        height = 750,
                         padding = 15,
                         duration = 1000,
                         orientation = Math.PI / 2,
