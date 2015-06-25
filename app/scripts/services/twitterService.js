@@ -112,7 +112,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                url = url.replace(/&cursor=[\d]*/gi, "");
                url += '&cursor=' + cursor;
                // console.log(url); // For dev purposes
-               if (i < 4) { // dev
+               if (i < 2) { // dev
                // if (cursor!==0) { // Final condition
                // Create promise
                var promise = TwitterAuth.get(url);
@@ -265,7 +265,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Replace cursor in URL query params with new cursor
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
-            if (i < 2) { // 4 to get up to 800 last tweets
+            if (i < 1) { // 4 to get up to 800 last tweets
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {

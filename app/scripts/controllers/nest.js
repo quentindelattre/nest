@@ -49,6 +49,27 @@ angular.module('nestApp')
       }
       $scope.disableMore = false;
    };
+   $scope.getTweetForDay = function (d){
+      var dayTweets = [];
+      var userTimeline = $scope.userTimeline;
+      // console.log(d);
+      $scope.$apply(function() {
+         $scope.timeMachine.max=d;
+         setStats();
+         for (var i = 0; i < userTimeline.length; i++) {
+            if (userTimeline[i].created_at.days===d) {
+               dayTweets.push(userTimeline[i]);
+            }
+         }
+         $scope.dayTweets=dayTweets;
+         if (!$scope.tweetModal) {
+            $scope.tweetModal=true
+         }
+      });
+   };
+   $scope.closeModal = function(){
+      $scope.tweetModal = false;
+   };
    // Listen for interraction with time machine slider
    $scope.$on("slideEnded", function() {
       // refresh data
@@ -221,17 +242,17 @@ angular.module('nestApp')
          prevRtCount = 0,
          barData = [];
       // Get engagement statistics for each day in the time machine
-      for (var i = 0; i < tMax; i++) {
+      for (var i = 0; i <= tMax; i++) {
          rtCount = countRetweets(userTimeline, i)-prevRtCount;
          favCount = countFavorites(userTimeline, i)-prevFavCount;
          var newData = {
-            day:  i,
-            retweets:   rtCount,
-            favorites:  favCount
+            Day:  i,
+            Retweets:   rtCount,
+            Favorites:  favCount
          };
          barData.push(newData);
-         prevRtCount=rtCount;
-         prevFavCount=favCount;
+         prevRtCount=prevRtCount+rtCount;
+         prevFavCount=prevFavCount+favCount;
       }
       $scope.barData=barData;
    }
@@ -259,14 +280,6 @@ angular.module('nestApp')
          size: stats.engaged.val
       }];
       $scope.vennData = sets;
-   }
-   function getTweetForDay(d, userTimeline){
-      var dayTweets = [];
-      for (var i = 0; i < d; i++) {
-         if (userTimeline[i].created_at.days===d) {
-            dayTweets.push(userTimeline[i]);
-         }
-      }
    }
    function countActiveFollower(followers, timeLimit) {
       var followerCount = 0;

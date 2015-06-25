@@ -40,7 +40,7 @@ angular.module('nestApp.directives')
                    .attr("class", "venntooltip");
 
                // add listeners to all the groups to display tooltip on mousover
-               d3.selectAll("g")
+               d3.selectAll(".venn_diagram g")
                   .on("mouseover", function(d, i) {
 
                      // Display a tooltip with the current size
@@ -390,7 +390,7 @@ angular.module('nestApp.directives')
                             if (areaStats.arcs.length === 0) {
                                 ret = {'x': 0, 'y': -1000, disjoint:true};
                             } else {
-                                // take average of all the points in the intersection
+                                // take avercount of all the points in the intersection
                                 // polygon
                                 ret = venn.getCenter(areaStats.arcs.map(function (a) { return a.p1; }));
                             }
@@ -1418,4 +1418,131 @@ angular.module('nestApp.directives')
       }]
    }
 
+}])
+.directive('barChart', ['d3', function(d3) {
+   return {
+      restrict: 'E',
+      scope:{
+         data:'=',
+         current:'@',
+         onClick:'&'
+      },
+      template: '<div class="bar_chart"><h4>Evolution over time</h4></div>',
+      link: function(scope, iElement, iAttrs) {
+
+         // Courtesy of http://github.com/DeBraid/www.cacheflow.ca
+
+
+         // watch for data changes and re-render
+         scope.$watchGroup(['data', 'current'], function(newVals, oldVals) {
+            // console.log('newvals', newVals);
+            if (newVals) {
+               return scope.render(newVals);
+            }
+         }, true);
+
+
+         scope.render = function(dataSet){
+            var data=dataSet[0];
+            var current = dataSet[1];
+            var margin = {top: 15, right: 15, bottom: 15, left: 15},
+            width = 1230 - margin.left - margin.right,
+            height = 170 - margin.top - margin.bottom;
+
+            var svg = d3.select(".bar_chart").append("svg")
+               .attr("width", width + margin.left + margin.right)
+               .attr("height", height + margin.top + margin.bottom)
+               .append("g")
+               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var headers = ["Retweets","Favorites"];
+
+            var layers = d3.layout.stack()(headers.map(function(count) {
+               return data.map(function(d) {
+                  return {x: d.Day, y: +d[count]};
+               });
+            }));
+            var yStackMax = d3.max(layers, function(layer) { return d3.max(layer, function(d) { return d.y0 + d.y; }); });
+
+            var xScale = d3.scale.ordinal()
+               .domain(layers[0].map(function(d) { return d.x; }))
+               .rangeRoundBands([25, width], .08);
+
+            var y = d3.scale.linear()
+               .domain([1, yStackMax])
+               .range([height, 0]);
+
+               var color = d3.scale.ordinal()
+               .domain(headers)
+               .range(["#77b255", "#ffac33"]);
+
+            var layer = svg.selectAll(".layer")
+               .data(layers)
+               .enter().append("g")
+               .attr("class", "layer")
+               .style("fill", function(d, i) { return color(i); });
+
+            var rect = layer.selectAll("rect")
+               .data(function(d) { return d; })
+               .enter().append("rect")
+               .attr("x", function(d) { return xScale(d.x); })
+               .attr("y", height)
+               .attr("width", xScale.rangeBand())
+               .attr("height", 0)
+               .style("opacity",0.5)
+               .on("click", function(d, i){
+                  return scope.onClick({item: i});
+               })
+               .on("mouseover", function(d, i) {
+                  // highlight the current path
+                  var selection = d3.selectAll("rect")
+                  .filter(function(d) { return d.x == i; })
+                  .filter(function(d) { return d.x != scope.current; })
+                  .transition()
+                     .duration(400) // time of duration
+                     .style("opacity", 1);
+               })
+
+               .on("mouseout", function(d, i) {
+                  var selection = d3.selectAll("rect")
+                  .filter(function(d) { return d.x == i; })
+                  .filter(function(d) { return d.x != scope.current; })
+                  .transition()
+                    .duration(400) // time of duration
+                    .style("opacity", 0.5);
+               });
+
+               var today = d3.selectAll("rect")
+                  .style("opacity", 0.5)
+                  .filter(function(d) { return d.x == scope.current; })
+                  .style("opacity", 1);
+
+            rect.transition()
+               .delay(function(d, i) { return i * 10; })
+               .attr("y", function(d) { return y(d.y0 + d.y); })
+               .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); });
+
+
+            var legend = svg.selectAll(".legend")
+               .data(headers.slice().reverse())
+               .enter().append("g")
+               .attr("class", "legend")
+               .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+            legend.append("rect")
+               .attr("x", 0)
+               .attr("width", 18)
+               .attr("height", 18)
+               .style("fill", color)
+               .style("opacity",0.5);
+
+            legend.append("text")
+               .attr("x", 90)
+               .attr("y", 9)
+               .attr("dy", ".35em")
+               .style("text-anchor", "end")
+               .text(function(d) { return d;  });
+         };
+      }
+   }
 }]);

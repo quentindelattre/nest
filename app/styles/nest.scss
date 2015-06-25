@@ -192,9 +192,9 @@
             width: 100%;
             .venn_diagram{
                position: absolute;
-               bottom: 0;
+               top: 0;
                left: 0;
-               height: 100%;
+               height: 75%;
                padding-top: 80px;
                width: 80%;
                .venn-intersection{
@@ -208,6 +208,19 @@
                }
                .venn-sets-C{
                   z-index: 110;
+               }
+            }
+            bar-chart{
+               position: absolute;
+               bottom: 0;
+               left: 0;
+               height: 25%;
+               width: 80%;
+               h4{
+                  padding-left: 15px;
+               }
+               text{
+                  font-weight: 200;
                }
             }
             .tweet_entities{
@@ -253,6 +266,61 @@
                      margin: 0 10px;
                   }
                }
+            }
+         }
+      }
+   }
+   .modal_tweet{
+      position: fixed;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      height: 100%;
+      width: 100%;
+      overflow-y: scroll;
+      h4{
+         text-align: center;
+      }
+      .close_modal{
+         position: absolute;
+         top: 0;
+         right: 0;
+         background: none;
+         border: none;
+         padding: 10px 15px;
+      }
+      .tweet_wrap{
+         text-align: center;
+         padding: 15px;
+         border: 0.5px solid #e5e5e5;
+         margin: 15px 35%;
+         background: rgba(0, 0, 0, 0.1);
+         width: 30%;
+         p{
+            font-weight: 200;
+            font-size:18px;
+         }
+         a{
+            color: white;
+            font-style: italic;
+            display: block;
+            font-weight: 200;
+         }
+         .stats_details{
+            list-style: none;
+            display: inline-block;
+            padding: 0;
+            margin: 20px 0 0;
+            li{
+               .glyphicon{
+                  padding-right: 10px;
+               }
+               float: left;
+               position: relative;
+               margin: 0 15px;
+               text-align: center;
+               font-size: 13px;
+               font-weight: 300;
             }
          }
       }

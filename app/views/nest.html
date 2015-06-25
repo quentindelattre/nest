@@ -10,7 +10,7 @@
         <img alt="Twitter profile img" ng-src="{{user.profile_image_url}}"/>
         <h1>Hello, @{{user.screen_name}}</h1>
       </div>
-      <div class="stats" ng-if="stats">
+      <div class="stats animate-if" ng-if="stats">
         <ul>
           <li>
             Total followers
@@ -50,7 +50,7 @@
           </li>
         </ul>
       </div>
-      <div class="latest_tweet">
+      <div class="latest_tweet animate-if" ng-if="stats">
          <h4>Latest tweet <span>{{user.status.created_at|twitterDate}}</span></h4>
          <p>
             «{{user.status.text}}»
@@ -70,10 +70,10 @@
       <div class="slider">
         <rzslider ng-if="timeMachine" rz-slider-always-show-bar="true" rz-slider-ceil="timeMachine.ceil" rz-slider-floor="timeMachine.floor" rz-slider-model="timeMachine.max" rz-slider-translate="translate"></rzslider>
       </div>
-      <div class="visualization">
-        <div ng-venn class="venn_diagram" ng-model="vennData" ng-if="vennData"></div>
-        <!-- <ng-bar-chart height="200" data="barData" current="timeMachine.max"></ng-bar-chart> -->
-        <div class="tweet_entities" ng-if="hashtags">
+      <div class="visualization" ng-if="vennData">
+        <div ng-venn class="venn_diagram" ng-model="vennData"></div>
+        <bar-chart data="barData" on-click="getTweetForDay(item)" current="{{timeMachine.max}}"></bar-chart>
+        <div class="tweet_entities animate-if" ng-if="hashtags">
           <h2>Popluar hashtags</h2>
           <ol>
             <li ng-repeat="h in hashtags | limitTo: limit | orderBy : '-count'">
@@ -90,4 +90,20 @@
       </div>
     </div>
   </section>
+  <div class="modal_tweet animate-if" ng-if="tweetModal">
+     <h4>Tweeted {{timeMachine.max}} days ago</h4>
+     <button class="close_modal" ng-click="closeModal()">
+           <span class="glyphicon glyphicon-remove"></span>
+     </button>
+     <div class="tweet_wrap" ng-repeat="t in dayTweets | orderBy:'-retweet_count'">
+       <p>
+          «{{t.text}}»
+       </p>
+       <a ng-href="http://twitter.com/{{user.screen_name}}/status/{{t.id_str}}" target="_blank">Go to tweet &rsaquo;</a>
+       <ul class="stats_details">
+          <li><span class="glyphicon glyphicon-retweet"></span>{{t.retweet_count | number}}</li>
+          <li><span class="glyphicon glyphicon-star"></span>{{t.favorite_count | number}}</li>
+       </ul>
+     </div>
+ </div>
 </div>
