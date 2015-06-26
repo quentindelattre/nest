@@ -148,6 +148,12 @@
                   text-align: center;
                   font-size: 13px;
                   font-weight: 300;
+                  &:first-child{
+                     color: #77b255;
+                  }
+                  &:last-child{
+                     color:#ffac33;
+                  }
                }
             }
          }
@@ -289,38 +295,63 @@
          border: none;
          padding: 10px 15px;
       }
-      .tweet_wrap{
-         text-align: center;
-         padding: 15px;
-         border: 0.5px solid #e5e5e5;
-         margin: 15px 35%;
-         background: rgba(0, 0, 0, 0.1);
-         width: 30%;
-         p{
-            font-weight: 200;
-            font-size:18px;
-         }
-         a{
-            color: white;
-            font-style: italic;
-            display: block;
-            font-weight: 200;
-         }
-         .stats_details{
-            list-style: none;
-            display: inline-block;
-            padding: 0;
-            margin: 20px 0 0;
-            li{
-               .glyphicon{
-                  padding-right: 10px;
-               }
-               float: left;
+      ol{
+         list-style: none;
+         .tweet_wrap{
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+            padding: 15px;
+            counter-increment: step-counter;
+            // border: 0.5px solid #e5e5e5;
+            margin: 15px 35%;
+            background: rgba(0, 0, 0, 0.5);
+            width: 30%;
+            p{
+               font-weight: 200;
+               font-size:18px;
+            }
+            a{
+               color: white;
+               font-style: italic;
+               display: inline-block;
+               width: 20%;
+               margin: 0 40%;
+               font-weight: 200;
+            }
+            .stats_details{
                position: relative;
-               margin: 0 15px;
-               text-align: center;
-               font-size: 13px;
-               font-weight: 300;
+               list-style: none;
+               display: inline-block;
+               padding: 0;
+               margin: 20px 0 0;
+               li{
+                  .glyphicon{
+                     padding-right: 10px;
+                  }
+                  float: left;
+                  margin: 0 15px;
+                  text-align: center;
+                  font-size: 13px;
+                  font-weight: 300;
+                  padding: 0;
+                  &:first-child{
+                     color: #77b255;
+                  }
+                  &:last-child{
+                     color:#ffac33;
+                  }
+               }
+            }
+            &::before{
+               content: counter(step-counter);
+               position: absolute;
+               bottom: -40px;
+               left: -15px;
+               font-style: italic;
+               font-size: 100px;
+               opacity: 0.1;
+               width: 60px
             }
          }
       }

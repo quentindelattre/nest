@@ -51,7 +51,7 @@
         </ul>
       </div>
       <div class="latest_tweet animate-if" ng-if="stats">
-         <h4>Latest tweet <span>{{user.status.created_at|twitterDate}}</span></h4>
+         <h4>Latest tweet from you <span>{{user.status.created_at|twitterDate}}</span></h4>
          <p>
             «{{user.status.text}}»
          </p>
@@ -74,7 +74,7 @@
         <div ng-venn class="venn_diagram" ng-model="vennData"></div>
         <bar-chart data="barData" on-click="getTweetForDay(item)" current="{{timeMachine.max}}"></bar-chart>
         <div class="tweet_entities animate-if" ng-if="hashtags">
-          <h2>Popluar hashtags</h2>
+          <h2>Most frequent hashtags</h2>
           <ol>
             <li ng-repeat="h in hashtags | limitTo: limit | orderBy : '-count'">
               <a href="https://twitter.com/hashtag/{{h.hashtag}}?src=hash" target="_blank">
@@ -91,11 +91,23 @@
     </div>
   </section>
   <div class="modal_tweet animate-if" ng-if="tweetModal">
-     <h4>Tweeted {{timeMachine.max}} days ago</h4>
+     <h4>Your top tweets from {{timeMachine.max}} days ago</h4>
      <button class="close_modal" ng-click="closeModal()">
            <span class="glyphicon glyphicon-remove"></span>
      </button>
-     <div class="tweet_wrap" ng-repeat="t in dayTweets | orderBy:'-retweet_count'">
+     <ol>
+        <li class="tweet_wrap" ng-repeat="t in dayTweets | orderBy:'-retweet_count'">
+         <p>
+            «{{t.text}}»
+         </p>
+         <a ng-href="http://twitter.com/{{user.screen_name}}/status/{{t.id_str}}" target="_blank">Go to tweet &rsaquo;</a>
+         <ul class="stats_details">
+            <li><span class="glyphicon glyphicon-retweet"></span>{{t.retweet_count | number}}</li>
+            <li><span class="glyphicon glyphicon-star"></span>{{t.favorite_count | number}}</li>
+         </ul>
+      </li>
+     </ol>
+     <!-- <div class="tweet_wrap" ng-repeat="t in dayTweets | orderBy:'-retweet_count'">
        <p>
           «{{t.text}}»
        </p>
@@ -104,6 +116,6 @@
           <li><span class="glyphicon glyphicon-retweet"></span>{{t.retweet_count | number}}</li>
           <li><span class="glyphicon glyphicon-star"></span>{{t.favorite_count | number}}</li>
        </ul>
-     </div>
+     </div> -->
  </div>
 </div>
