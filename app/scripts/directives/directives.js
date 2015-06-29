@@ -1448,7 +1448,8 @@ angular.module('nestApp.directives')
          }, true);
 
          scope.updateView = function(t){
-            var rect = d3.selectAll('rect')
+            var layer = d3.selectAll(".layer");
+            var rect = layer.selectAll('rect')
                .on("click", function(d, i){
                   return scope.onClick({item: i});
                })
@@ -1505,7 +1506,7 @@ angular.module('nestApp.directives')
                .domain([1, yStackMax])
                .range([height, 0]);
 
-               var color = d3.scale.ordinal()
+            var color = d3.scale.ordinal()
                .domain(headers)
                .range(["#77b255", "#ffac33"]);
 
