@@ -1434,17 +1434,50 @@ angular.module('nestApp.directives')
 
 
          // watch for data changes and re-render
-         scope.$watchGroup(['data', 'current'], function(newVals, oldVals) {
-            // console.log('newvals', newVals);
+         scope.$watch('data', function(newVals, oldVals) {
             if (newVals) {
-               return scope.render(newVals);
+               scope.render(newVals);
             }
          }, true);
 
+         // watch for data changes and re-render
+         scope.$watch('current', function(newVals, oldVals) {
+            if (newVals) {
+               scope.updateView(newVals);
+            }
+         }, true);
 
-         scope.render = function(dataSet){
-            var data=dataSet[0];
-            var current = dataSet[1];
+         scope.updateView = function(t){
+            var rect = d3.selectAll('rect')
+               .on("click", function(d, i){
+                  return scope.onClick({item: i});
+               })
+               .on("mouseover", function(d, i) {
+                  // highlight the current path
+                  var selection = d3.selectAll("rect")
+                  .filter(function(d) { return d.x == i; })
+                  .filter(function(d) { return d.x != scope.current; })
+                  .transition()
+                     .duration(400) // time of duration
+                     .style("opacity", 1);
+               })
+
+               .on("mouseout", function(d, i) {
+                  var selection = d3.selectAll("rect")
+                  .filter(function(d) { return d.x == i; })
+                  .filter(function(d) { return d.x != scope.current; })
+                  .transition()
+                    .duration(400) // time of duration
+                    .style("opacity", 0.5);
+               });
+
+               var today = d3.selectAll("rect")
+                  .style("opacity", 0.5)
+                  .filter(function(d) { return d.x == scope.current; })
+                  .style("opacity", 1);
+         };
+
+         scope.render = function(data){
             var margin = {top: 15, right: 15, bottom: 15, left: 15},
             width = 1230 - margin.left - margin.right,
             height = 170 - margin.top - margin.bottom;
@@ -1489,33 +1522,8 @@ angular.module('nestApp.directives')
                .attr("y", height)
                .attr("width", xScale.rangeBand())
                .attr("height", 0)
-               .style("opacity",0.5)
-               .on("click", function(d, i){
-                  return scope.onClick({item: i});
-               })
-               .on("mouseover", function(d, i) {
-                  // highlight the current path
-                  var selection = d3.selectAll("rect")
-                  .filter(function(d) { return d.x == i; })
-                  .filter(function(d) { return d.x != scope.current; })
-                  .transition()
-                     .duration(400) // time of duration
-                     .style("opacity", 1);
-               })
+               .style("opacity",0.5);
 
-               .on("mouseout", function(d, i) {
-                  var selection = d3.selectAll("rect")
-                  .filter(function(d) { return d.x == i; })
-                  .filter(function(d) { return d.x != scope.current; })
-                  .transition()
-                    .duration(400) // time of duration
-                    .style("opacity", 0.5);
-               });
-
-               var today = d3.selectAll("rect")
-                  .style("opacity", 0.5)
-                  .filter(function(d) { return d.x == scope.current; })
-                  .style("opacity", 1);
 
             rect.transition()
                .delay(function(d, i) { return i * 10; })
