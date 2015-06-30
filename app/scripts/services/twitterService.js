@@ -143,19 +143,25 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Create promise
             var promise = TwitterAuth.get(url);
             promise.then(function(data) {
-               defer.resolve(data);
-               // Set first cursor for paging
-               cursor = data.next_cursor;
-               // console.log('cursor', cursor); // For dev purposes
-               // Update followersList with retrieved values
-               followersList = followersList.concat(data.users);
-               // Update timer
-               updateRemainingTime();
-               // Repeat function asynchronously if user has more than 200 followers
-               if (usr.followers_count>200) {
-                  getFollowers(cursor);
-               } else {
-                  // Otherwise, resolve main pormise
+               // Check if response array is empty
+               if (data.length>0) {
+                  defer.resolve(data);
+                  // Set first cursor for paging
+                  cursor = data.next_cursor;
+                  // console.log('cursor', cursor); // For dev purposes
+                  // Update followersList with retrieved values
+                  followersList = followersList.concat(data.users);
+                  // Update timer
+                  updateRemainingTime();
+                  // Repeat function asynchronously if user has more than 200 followers
+                  if (usr.followers_count>200) {
+                     getFollowers(cursor);
+                  } else {
+                     // Otherwise, resolve main pormise
+                     mainDefer.resolve(followersList);
+                     return defer.promise;
+                  }
+               }else{
                   mainDefer.resolve(followersList);
                   return defer.promise;
                }
@@ -226,13 +232,19 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Create promise
             var promise = TwitterAuth.get(url);
             promise.then(function(data) {
-               defer.resolve(data);
-               // Set first maxId according to last tweet's id
-               maxId = data[data.length - 1].id;
-               // Set new timeline with retrieved values
-               timeline = timeline.concat(data);
-               // Repeat function asynchronously
-               getTweet(maxId);
+               // Check if response array is empty
+               if (data.length>0) {
+                  defer.resolve(data);
+                  // Set first maxId according to last tweet's id
+                  maxId = data[data.length - 1].id;
+                  // Set new timeline with retrieved values
+                  timeline = timeline.concat(data);
+                  // Repeat function asynchronously
+                  getTweet(maxId);
+               }else{
+                  mainDefer.resolve(timeline);
+                  return defer.promise;
+               }
             }, function(err) {
                console.log('waiting…');
                $timeout(getTweet, 300000); // Wait 5 minutes for new session
@@ -297,12 +309,19 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             var promise = TwitterAuth.get(url);
             promise.then(function(data) {
                defer.resolve(data);
-               // Set first maxId according to last tweet's id
-               maxId = data[data.length - 1].id;
-               // Set new timeline with retrieved values
-               timeline = timeline.concat(data);
-               // Repeat function asynchronously
-               getTweet(maxId);
+               // Check if response array is empty
+               if (data.length>0) {
+                  // Set first maxId according to last tweet's id
+                  maxId = data[data.length - 1].id;
+                  // Set new timeline with retrieved values
+                  timeline = timeline.concat(data);
+                  // Repeat function asynchronously
+                  getTweet(maxId);
+               }else {
+                  mainDefer.resolve(timeline);
+                  return defer.promise;
+               }
+
             }, function(err) {
                console.log('waiting…');
                $timeout(getTweet, 300000);
