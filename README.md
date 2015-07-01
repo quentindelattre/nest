@@ -2,13 +2,13 @@
 
 ## Introduction
 
-Nest is my Bachelor project at [HEIG-VD](http://www.heig-vd.ch). It was developed to provide an Analytics Tool focused on measuring followers activit and engagement for the Radio Télévision Suisse (RTS) - public service TV and Radio broadcast company.
+Nest is my Bachelor project at [HEIG-VD](http://www.heig-vd.ch). It was developed to provide an Analytics Tool focused on measuring followers activity and engagement for the Radio Télévision Suisse (RTS) - public service TV and Radio broadcast company.
 
 This web application runs on [AngularJS](https://angularjs.org) and renders the data visualization through the  [D3](http://d3js.org) library. The Venn diagram rendering is courtesy of [Benfred's venn.js plugin](https://github.com/benfred/venn.js).
 
 <!-- The app is up and running at this address: [https://nest.herokuapp.com](https://nest.herokuapp.com). -->
 
-## Requirements to run ono localhost
+## Requirements to run on localhost
 
 We assume you have already installed [Node and npm](https://nodejs.org).
 
@@ -16,7 +16,12 @@ We assume you have already installed [Node and npm](https://nodejs.org).
 ```
 $ npm install -g grunt-cli bower
 ```
-* Follow this quick install guide to get OAuthd up and running (Will guide you through installing Redis) : https://github.com/oauth-io/oauthd/wiki/Quickstart
+* Follow this quick install guide to get [OAuthd](https://github.com/oauth-io/oauthd) up and running (Will guide you through installing Redis) : https://github.com/oauth-io/oauthd/wiki/Quickstart
+* Go to the Twitter Developers page and create an App (you'll need its token for OAuth)
+![](/screenshots/TwitterApp.png)
+* When your Redis server and OAutd are running, head to localhost:6284 and log in the admin panel
+* Setup the Twitter App
+![](http://blog.oauth.io/wp-content/uploads/2013/12/twitter-setup2.gif)
 
 ## Installation
 
@@ -54,7 +59,7 @@ Nest collects three different data to provide the analytics :
 
 ![](/screenshots/02_Render.jpg)
 
-The visualization page shows you the data in an interactive way. On the left sidebar, you get numerical statistics about your followers activity and engagement with your account and the latest tweet from your account. On the top of the page, you can see the Time Machine that lets you visualize the evolution of your stats over time. The main part of the view is occupied by the interactive charts. The intersecting circles represent the statistics in the left sidebar while the bar chart shows the retweets and favorites your tweets generated during the time period set in the Time Machine. Finally, the right sidebar presents the most frequent hashtags used in your tweets in the last days set in the Time Machine. Let's walk through the stats and functionnalities available in the app.
+The visualization page shows you the data in an interactive way. On the left sidebar, you get numerical statistics about your followers activity and engagement with your account and the latest tweet from your account. On the top of the page, you can see the Time Machine that lets you visualize the evolution of your stats over time. The main part of the view is occupied by the interactive charts. The intersecting circles represent the statistics in the left sidebar while the bar chart shows the retweets and favorites your tweets generated during the time period set in the Time Machine. Finally, the right sidebar presents the most frequent hashtags used in your tweets in the last days set in the Time Machine. Let's walk through the stats and functionalities available in the app.
 
 #### Time Machine
 ![](/screenshots/03_TimeMachine.jpg)
