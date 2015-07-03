@@ -210,13 +210,18 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
-                  defer.resolve(data);
-                  // Set new maxId according to last tweet's id
-                  var newMaxId = data[data.length - 1].id;
-                  // Set new timeline with retrieved values
-                  timeline = timeline.concat(data);
-                  // Repeat function asynchronously
-                  getTweet(newMaxId);
+                  if (data.length>0) {
+                     defer.resolve(data);
+                     // Set new maxId according to last tweet's id
+                     var newMaxId = data[data.length - 1].id;
+                     // Set new timeline with retrieved values
+                     timeline = timeline.concat(data);
+                     // Repeat function asynchronously
+                     getTweet(newMaxId);
+                  }else{
+                     mainDefer.resolve(timeline);
+                     return defer.promise;
+                  }
                }, function(err) {
                   console.log('waiting…');
                   $timeout(getTweet(), 300000); // Wait 5 minutes for new session
@@ -283,15 +288,20 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
                   defer.resolve(data);
-                  // Set new maxId according to last tweet's id
-                  var newMaxId = data[data.length - 1].id;
-                  // console.log('new maxId: '+newMaxId);
-                  // Set new timeline with retrieved values
-                  timeline = timeline.concat(data);
-                  //Check timeline's new size (should be +200)
-                  console.log('new timeline size : ' + timeline.length);
-                  // Repeat function asynchronously
-                  getTweet(newMaxId);
+                  if (data.length>0) {
+                     // Set new maxId according to last tweet's id
+                     var newMaxId = data[data.length - 1].id;
+                     // console.log('new maxId: '+newMaxId);
+                     // Set new timeline with retrieved values
+                     timeline = timeline.concat(data);
+                     //Check timeline's new size (should be +200)
+                     console.log('new timeline size : ' + timeline.length);
+                     // Repeat function asynchronously
+                     getTweet(newMaxId);
+                  }else{
+                     mainDefer.resolve(timeline);
+                     return defer.promise;
+                  }
                }, function(err) {
                   console.log('waiting…');
                   $timeout(getTweet, 300000); // Wait 5 minutes for new session
