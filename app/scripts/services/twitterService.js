@@ -144,25 +144,19 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Create promise
             var promise = TwitterAuth.get(url);
             promise.then(function(data) {
-               // Check if response array is empty
-               if (data.length>0) {
-                  defer.resolve(data);
-                  // Set first cursor for paging
-                  cursor = data.next_cursor;
-                  // console.log('cursor', cursor); // For dev purposes
-                  // Update followersList with retrieved values
-                  followersList = followersList.concat(data.users);
-                  // Update timer
-                  updateRemainingTime();
-                  // Repeat function asynchronously if user has more than 200 followers
-                  if (usr.followers_count>200) {
-                     getFollowers(cursor);
-                  } else {
-                     // Otherwise, resolve main pormise
-                     mainDefer.resolve(followersList);
-                     return defer.promise;
-                  }
-               }else{
+               defer.resolve(data);
+               // Set first cursor for paging
+               cursor = data.next_cursor;
+               // console.log('cursor', cursor); // For dev purposes
+               // Update followersList with retrieved values
+               followersList = followersList.concat(data.users);
+               // Update timer
+               updateRemainingTime();
+               // Repeat function asynchronously if user has more than 200 followers
+               if (usr.followers_count>200) {
+                  getFollowers(cursor);
+               } else {
+                  // Otherwise, resolve main pormise
                   mainDefer.resolve(followersList);
                   return defer.promise;
                }
