@@ -10,6 +10,7 @@
 angular
   .module('nestApp', [
     'nestApp.services',
+    'oauthd',
     'nestApp.directives',
     'rzModule',
     'ngAnimate',
