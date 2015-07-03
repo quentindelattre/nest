@@ -386,14 +386,15 @@ module.exports = function (grunt) {
         }, {
           expand: true,
           cwd: '.',
-          src: [
-             'bower_components/bootstrap-sass-official/*{,*/}*.*',
-             'bower_components/oauthio/*{,*/}*.*',
-             'bower_components/venn.js/*{,*/}*.*',
-             'bower_components/angular-i18n/*{,*/}*.*',
-             'bower_components/jquery/*{,*/}*.*',
-             'bower_components/angularjs-slider/*{,*/}*.*',
-          ],
+          src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
+         //  [
+         //     'bower_components/bootstrap-sass-official/*{,*/}*.*',
+         //     'bower_components/oauthio/*{,*/}*.*',
+         //     'bower_components/venn.js/*{,*/}*.*',
+         //     'bower_components/angular-i18n/*{,*/}*.*',
+         //     'bower_components/jquery/*{,*/}*.*',
+         //     'bower_components/angularjs-slider/*{,*/}*.*',
+         //  ],
           dest: '<%= yeoman.dist %>'
         }]
       },
