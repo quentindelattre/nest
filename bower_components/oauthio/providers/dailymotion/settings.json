@@ -1,22 +1,16 @@
 {
 	"settings": {
 		"createApp": {
-			"url": "http://www.dailymotion.com/profile/developer/new",
-			"image": "config.png"
+			"url": "http://www.dailymotion.com/profile/developer/new"
 		},
 		"copyingKey": {
-			"url": "http://www.dailymotion.com/profile/developer",
-			"image": "keys.png"
+			"url": "http://www.dailymotion.com/profile/developer"
 		},
 		"install": {
 			"href": {
 				"provider": "http://www.dailymotion.com/",
 				"docs": "http://www.dailymotion.com/doc/api/graph-api.html"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/user/me"
-        }
+		}
 	}
 }

@@ -13,10 +13,6 @@
 				"provider": "http://instagram.com",
 				"docs": "http://instagram.com/developer/"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/users/self"
-        }
+		}
 	}
 }

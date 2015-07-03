@@ -1,12 +1,10 @@
 {
 	"settings": {
 		"createApp": {
-			"url": "http://dev.evernote.com/doc/",
-			"image": "config.png"
+			"url": "http://dev.evernote.com/doc/"
 		},
 		"copyingKey": {
-			"url": "https://www.evernote.com/AuthorizedServices.action",
-			"image": "keys.png"
+			"url": "https://www.evernote.com/AuthorizedServices.action"
 		},
 		"install": {
 			"href": {

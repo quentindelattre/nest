@@ -1,12 +1,10 @@
 {
 	"settings": {
 		"createApp": {
-			"url": "https://code.google.com/apis/console/",
-			"image": "config.png"
+			"url": "https://code.google.com/apis/console/"
 		},
 		"copyingKey": {
-			"url": "https://code.google.com/apis/console/",
-			"image": "keys.png"
+			"url": "https://code.google.com/apis/console/"
 		},
 		"install": {
 			"href": {

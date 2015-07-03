@@ -1,22 +1,16 @@
 {
 	"settings": {
 		"createApp": {
-			"url": "http://dev.viadeo.com/dashboard/",
-            "image": "config.png"
+			"url": "http://dev.viadeo.com/dashboard/"
 		},
 		"copyingKey": {
-			"url": "http://dev.viadeo.com/dashboard/",
-            "image": "keys.png"
+			"url": "http://dev.viadeo.com/dashboard/"
 		},
 		"install": {
 			"href": {
 				"provider": "https://www.viadeo.com",
 				"docs": "http://dev.viadeo.com/documentation/"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/user/USER_ID"
-        }
+		}
 	}
 }

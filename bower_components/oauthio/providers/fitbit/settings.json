@@ -13,10 +13,6 @@
 				"provider": "http://www.fitbit.com/",
 				"docs": "https://wiki.fitbit.com/display/API/Fitbit+API"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/1/user/-/profile.json"
-        }
+		}
 	}
 }

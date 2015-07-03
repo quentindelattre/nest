@@ -1,22 +1,16 @@
 {
 	"settings": {
 		"createApp": {
-			"url": "https://api.imgur.com/oauth2/addclient",
-            "image": "config.png"
+			"url": "https://api.imgur.com/oauth2/addclient"
 		},
 		"copyingKey": {
-			"url": "http://imgur.com/account/settings/apps",
-            "image": "keys.png"
+			"url": "http://imgur.com/account/settings/apps"
 		},
 		"install": {
 			"href": {
 				"provider": "http://imgur.com/",
 				"docs": "http://api.imgur.com/"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/3/account/me"
-        }
+		}
 	}
 }

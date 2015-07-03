@@ -5,18 +5,13 @@
 			"image": "config.png"
 		},
 		"copyingKey": {
-			"url": "http://www.plurk.com/PlurkApp/",
-			"image": "keys.png"
+			"url": "http://www.plurk.com/PlurkApp/"
 		},
 		"install": {
 			"href": {
 				"provider": "http://www.plurk.com/",
 				"docs": "http://www.plurk.com/API#toc"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/v1/identity/openidconnect/userinfo/?SCHEMA"
-        }
+		}
 	}
 }

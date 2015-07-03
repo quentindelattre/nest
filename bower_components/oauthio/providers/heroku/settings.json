@@ -13,10 +13,6 @@
 				"provider": "https://heroku.com/",
 				"docs": "https://devcenter.heroku.com/articles/oauth"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/account"
-        }
+		}
 	}
 }

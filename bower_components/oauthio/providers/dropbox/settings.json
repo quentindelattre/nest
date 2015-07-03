@@ -1,22 +1,16 @@
 {
-    "settings": {
-        "createApp": {
-            "url": "https://www.dropbox.com/developers/apps/create",
-            "image": "config.png"
-        },
-        "copyingKey": {
-            "url": "https://www.dropbox.com/developers/apps",
-            "image": "keys.png"
-        },
-        "install": {
-            "href": {
-                "provider": "https://www.dropbox.com/",
-                "docs": "https://www.dropbox.com/developers/reference/api"
-            }
-        },
-        "sample": {
-            "method": "get",
-            "url": "/1/account/info"
-        }
-    }
+	"settings": {
+		"createApp": {
+			"url": "https://www.dropbox.com/developers/apps/create"
+		},
+		"copyingKey": {
+			"url": "https://www.dropbox.com/developers/apps"
+		},
+		"install": {
+			"href": {
+				"provider": "https://www.dropbox.com/",
+				"docs": "https://www.dropbox.com/developers/reference/api"
+			}
+		}
+	}
 }

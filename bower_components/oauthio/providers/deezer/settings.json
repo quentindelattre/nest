@@ -13,10 +13,6 @@
 				"provider": "http://www.deezer.com/",
 				"docs": "http://developers.deezer.com"
 			}
-		},
-        "sample": {
-            "method": "get",
-            "url": "/user/me"
-        }
+		}
 	}
 }

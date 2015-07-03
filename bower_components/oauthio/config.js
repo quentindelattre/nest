@@ -29,7 +29,6 @@ module.exports = {
 	plugins: [
 		'server.statistics',
 		'server.admin.auth',
-		'server.user_management',
 		'server.request',
 		'server.admin'
 	]

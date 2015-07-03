@@ -39,11 +39,6 @@ oauth =
 auth = plugins.data.auth
 
 
-cors_middleware = (req, res, next) ->
-	res.setHeader 'Access-Control-Allow-Origin', '*'
-	res.setHeader 'Access-Control-Allow-Methods', 'GET'
-	next()
-
 # build server options
 server_options =
 	name: 'OAuth Daemon'
@@ -58,8 +53,6 @@ server_options.formatters = formatters.formatters
 
 # create server
 server = restify.createServer server_options
-plugins.data.server = server
-plugins.runSync 'raw'
 
 server.use restify.authorizationParser()
 server.use restify.queryParser()
@@ -69,6 +62,7 @@ server.use (req, res, next) ->
 	next()
 
 # add server to shared plugins data and run init
+plugins.data.server = server
 plugins.runSync 'init'
 
 # little help
@@ -112,8 +106,8 @@ server.post config.base + '/refresh_token/:provider', (req, res, next) ->
 				return next e if e
 				if not provider.oauth2?.refresh
 					return next new check.Error "refresh token not supported for " + req.params.provider
-				oa = new oauth.oauth2(provider, keyset.parameters)
-				oa.refresh req.body.token, keyset, send(res,next)
+				oa = new oauth.oauth2
+				oa.refresh keyset, provider, req.body.token, send(res,next)
 
 # iframe injection for IE
 server.get config.base + '/iframe', (req, res, next) ->
@@ -193,7 +187,7 @@ clientCallback = (data, req, res, next) -> (e, r) -> #data:state,provider,redire
 		uaparser.setUA req.headers['user-agent']
 		browser = uaparser.getBrowser()
 		chromeext = data.origin.match(/chrome-extension:\/\/([^\/]+)/)
-		if browser.name?.substr(0,2) == 'IE'
+		if browser.name.substr(0,2) == 'IE'
 			res.setHeader 'p3p', 'CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"'
 			view += 'function createCookie(name, value) {\n'
 			view += '	var date = new Date();\n'
@@ -238,36 +232,27 @@ server.get config.base + '/', (req, res, next) ->
 			return next new check.Error 'state', 'invalid or expired' if not state
 			callback = clientCallback state:state.options.state, provider:state.provider, redirect_uri:state.redirect_uri, origin:state.origin, req, res, next
 			return callback new check.Error 'state', 'code already sent, please use /access_token' if state.step != "0"
+			oa = new oauth[state.oauthv]
+			oa.access_token state, req, (e, r) ->
+				status = if e then 'error' else 'success'
 
-			async.parallel [
-					(cb) -> db.providers.getExtended state.provider, cb
-					(cb) -> db.apps.getKeyset state.key, state.provider, cb
-			], (err, r) =>
-				return callback err if err
-				provider = r[0]
-				parameters = r[1].parameters
-				response_type = r[1].response_type
-				oa = new oauth[state.oauthv](provider, parameters)
-				oa.access_token state, req, response_type, (e, r) ->
-					status = if e then 'error' else 'success'
+				plugins.data.emit 'connect.callback', key:state.key, provider:state.provider, status:status
+				if not e
+					if state.options.response_type != 'token'
+						db.states.set stateid, token:JSON.stringify(r), step:1, (->) # assume the db is faster than ext http reqs
+					if state.options.response_type == 'code'
+						r = {}
+					if state.options.response_type != 'token'
+						r.code = stateid
+					if state.options.response_type == 'token'
+						db.states.del stateid, (->)
+					oad_uid = req.headers.cookie?.match(/oad_uid=%22(.*?)%22/)?[1]
+					if not oad_uid
+						oad_uid = db.generateUid()
+						d = new Date (new Date).getTime() + 30*24*3600*1000
+						res.setHeader 'Set-Cookie', 'oad_uid=%22' + oad_uid + '%22; Path=/; Expires=' + d.toGMTString()
 
-					plugins.data.emit 'connect.callback', key:state.key, provider:state.provider, status:status
-					if not e
-						if state.options.response_type != 'token'
-							db.states.set stateid, token:JSON.stringify(r), step:1, (->) # assume the db is faster than ext http reqs
-						if state.options.response_type == 'code'
-							r = {}
-						if state.options.response_type != 'token'
-							r.code = stateid
-						if state.options.response_type == 'token'
-							db.states.del stateid, (->)
-						oad_uid = req.headers.cookie?.match(/oad_uid=%22(.*?)%22/)?[1]
-						if not oad_uid
-							oad_uid = db.generateUid()
-							d = new Date (new Date).getTime() + 30*24*3600*1000
-							res.setHeader 'Set-Cookie', 'oad_uid=%22' + oad_uid + '%22; Path=/; Expires=' + d.toGMTString()
-
-					callback e, r
+				callback e, r
 
 # oauth: popup or redirection to provider's authorization url
 server.get config.base + '/auth/:provider', (req, res, next) ->
@@ -327,8 +312,8 @@ server.get config.base + '/auth/:provider', (req, res, next) ->
 				return cb new check.Error 'You must provide a state when server-side auth'
 			options.response_type = response_type
 			opts = oauthv:oauthv, key:key, origin:origin, redirect_uri:req.params.redirect_uri, options:options
-			oa = new oauth[oauthv](provider, parameters)
-			oa.authorize(opts, cb)
+			oa = new oauth[oauthv]
+			oa.authorize provider, parameters, opts, cb
 		(authorize, cb) ->
 			oad_uid = req.headers.cookie?.match(/oad_uid=%22(.*?)%22/)?[1]
 			return cb null, authorize.url if not oad_uid
@@ -425,12 +410,8 @@ server.get config.base_api + '/providers/:provider', (req, res, next) ->
 		db.providers.get req.params.provider, send(res,next)
 
 # get a provider config's extras
-server.get config.base_api + '/providers/:provider/settings', cors_middleware, (req, res, next) ->
-	db.providers.getSettings req.params.provider, send(res,next)
-
-# get the provider me.json mapping configuration
-server.get config.base_api + '/providers/:provider/user-mapping', cors_middleware, (req, res, next) ->
-	db.providers.getMeMapping req.params.provider, send(res,next)
+server.get config.base_api + '/providers/:provider/settings', (req, res, next) ->
+		db.providers.getSettings req.params.provider, send(res,next)
 
 # get a provider logo
 server.get config.base_api + '/providers/:provider/logo', ((req, res, next) ->

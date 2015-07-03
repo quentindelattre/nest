@@ -13,7 +13,6 @@
 				"provider": "http://google.com/",
 				"docs": "https://developers.google.com/google-apps/calendar/firstapp"
 			}
-		},
-		"jsfiddle": "http://jsfiddle.net/willjcksn/vmCh3/embedded/"
+		}
 	}
 }
