@@ -2,7 +2,7 @@
 var services = angular.module('nestApp.services', []);
 services.factory('twitterService', function($q, $rootScope, $timeout) {
    // initialize TwitterAuth service
-   var OAuth = require('oauthio');
+   // var OAuth = require('oauthio');
    var TwitterAuth = false;
    return {
       initialize: function() {
