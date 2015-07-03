@@ -6,9 +6,9 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
    return {
       initialize: function() {
          // Set callback URL to localhost for Developement
-         OAuth.setOAuthdURL('http://localhost:6284');
+         // OAuth.setOAuthdURL('http://localhost:6284');
          //initialize OAuth Demon with public key of the application
-         OAuth.initialize('t2URC7TqRzmRbkpdwDq0w12fyqU', {
+         OAuth.initialize('GS-2TxCExKLs3_NK3pSCW1AWrw0', {
             cache: true
          });
          //try to create an authorization result when the page loads, this means a returning user won't have to click the twitter button again
