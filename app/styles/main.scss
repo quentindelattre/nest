@@ -175,15 +175,31 @@ footer {
          }
          &.slider{
             top: 50px;
-            left: 41.5vw;
+            left: 39vw;
+            width: 22vw;
+            span{
+               float: left;
+               display: block;
+               margin: 10px
+            }
+         }
+         &.bar{
+            top: 250px;
+            left: 35vw;
+            width: 30vw;
+            span{
+               float: left;
+               display: block;
+               margin: 10px
+            }
          }
          &.hashtags{
-            top: 300px;
-            right: 5px;
+            top: 65vh;
+            left: 25vw;
          }
          &.venn{
-            top: 58vh;
-            left: 41.5vw;
+            top: 65vh;
+            right: 13.5vw;
          }
       }
    }
