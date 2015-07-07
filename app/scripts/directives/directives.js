@@ -78,8 +78,8 @@ angular.module('nestApp.directives')
             (function(venn) {
                 "use strict";
                 venn.VennDiagram = function() {
-                    var width = 625,
-                        height = 475,
+                    var width = 765,
+                        height = 645,
                         padding = 15,
                         duration = 1000,
                         orientation = Math.PI / 2,
@@ -1480,8 +1480,8 @@ angular.module('nestApp.directives')
 
          scope.render = function(data){
             var margin = {top: 15, right: 15, bottom: 15, left: 15},
-            width = 1525 - margin.left - margin.right,
-            height = 180 - margin.top - margin.bottom;
+            width = 1520 - margin.left - margin.right,
+            height = 220 - margin.top - margin.bottom;
 
             var svg = d3.select(".bar_chart").append("svg")
                .attr("width", width + margin.left + margin.right)
@@ -1562,7 +1562,6 @@ angular.module('nestApp.directives')
             data: '=',
             max: '@',
             item: '@',
-            onClick: '&'
         },
         template: '<div class="pie_chart"></div>',
         link: function(scope, iElement, iAttrs) {
@@ -1583,8 +1582,8 @@ angular.module('nestApp.directives')
                         if (scope.item == i) {
                             var w = 50, //width
                                 h = 50, //height
-                                normalized = 25 * (data.Engagement) / (scope.max),
-                                r = normalized, // adapt radius to engagement value
+                                normalized = 50 * (data.Engagement) / (scope.max),
+                                r = normalized/2, // adapt radius to engagement value
                                 color = d3.scale.ordinal().range(["#77b255", "#ffac33", "#07c"]); //custom range of colors
 
                             // map data to to be used by pie chart directive
@@ -1598,17 +1597,13 @@ angular.module('nestApp.directives')
                                 "label": "Replies",
                                 "value": data.Replies
                             }];
-                            data = mapped;
                             var vis = d3.select(this)
                                 .append("svg:svg") //create the SVG element inside the template
-                                .data([data]) //associate our data with the document
+                                .data([mapped]) //associate our data with the document
                                 .attr("width", w) //set the width and height of our visualization (these will be attributes of the <svg> tag
                                 .attr("height", h)
                                 .append("svg:g") //make a group to hold our pie chart
-                                .attr("transform", "translate(" + 1.5*r + "," + r + ")") //move the center of the pie chart from 0, 0 to radius, radius
-                                .on("click", function(d, i){
-                                   return scope.onClick({item: i});
-                                });
+                                .attr("transform", "translate(" + (w/2) + "," + (h/2) + ")"); //move the center of the pie chart from 0, 0 to radius, radius
 
                             var arc = d3.svg.arc() //this will create <path> elements for us using arc data
                                 .outerRadius(r);
