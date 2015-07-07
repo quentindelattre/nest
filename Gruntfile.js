@@ -387,15 +387,12 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '.',
           src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
-         // src: [
-         //     'bower_components/bootstrap-sass-official/*{,*/}*.*',
-         //     'bower_components/oauthio/*{,*/}*.*',
-         //     'bower_components/venn.js/*{,*/}*.*',
-         //     'bower_components/angular-i18n/*{,*/}*.*',
-         //     'bower_components/jquery/*{,*/}*.*',
-         //     'bower_components/angularjs-slider/*{,*/}*.*',
-         //  ],
           dest: '<%= yeoman.dist %>'
+       },{
+        expand: true,
+        cwd: 'bower_components/angular-i18n/',
+        src: '*.js',
+        dest: '<%= yeoman.dist %>/bower_components/angular-i18n'
         }]
       },
       styles: {
