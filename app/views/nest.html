@@ -58,6 +58,7 @@
          <ul class="stats_details">
             <li><span class="glyphicon glyphicon-retweet"></span>{{user.status.retweet_count | number}}</li>
             <li><span class="glyphicon glyphicon-star"></span>{{user.status.favorite_count | number}}</li>
+            <li><span class="glyphicon glyphicon-share-alt"></span>{{countReplies(user.status) | number}}</li>
          </ul>
       </div>
       <div class="bottom" ng-if="stats">
@@ -79,6 +80,31 @@
       </div>
       <div class="visualization" ng-if="vennData">
          <bar-chart data="barData" on-click="getTweetForDay(item)" current="{{timeMachine.max}}"></bar-chart>
+         <div class="tweet_entities animate-if" ng-if="hashtags">
+           <h2>Hashtags</h2>
+           <section>
+             <h4 class="hashtag" ng-click="order('Hashtag')">Hashtag <span class="glyphicon glyphicon-menu-up" ng-show="predicate === 'Hashtag'" ng-class="{reverse:reverse}"></span></h4>
+             <h4 class="frequency" ng-click="order('Frequency')">Frequency <span class="glyphicon glyphicon-menu-up" ng-show="predicate === 'Frequency'" ng-class="{reverse:reverse}"></span></h4>
+             <h4 class="engagement" ng-click="order('Engagement')">Engagement <span class="glyphicon glyphicon-menu-up" ng-show="predicate === 'Engagement'" ng-class="{reverse:reverse}"></span></h4>
+           </section>
+           <ol>
+             <li ng-repeat="h in hashtags | orderBy:predicate:reverse | limitTo: limit">
+               <div class="hashtag">
+                  <a ng-click="showTweetsForHashtag(h)">#{{h.Hashtag}}</a>
+               </div>
+               <div class="frequency">
+                  {{h.Frequency}} times
+               </div>
+               <div class="engagement">
+                  <pie-chart data="h" max="{{hashtagMaxEngagement}}" item="{{$index}}" ng-click="showTweetsForHashtag(h)"></pie-chart>
+               </div>
+            </li>
+           </ol>
+           <div class="bottom">
+             <button class="btn btn-simple" ng-click="incrementLimit()" ng-disabled="disableMore" type="button">More</button>
+             <button class="btn btn-simple" ng-click="decrementLimit()" ng-disabled="disableLess" type="button">Less</button>
+           </div>
+         </div>
         <div ng-venn class="venn_diagram" ng-model="vennData"></div>
       </div>
     </div>
