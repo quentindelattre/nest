@@ -9,8 +9,9 @@
     "angular-resource": "^1.3.0",
     "angular-route": "^1.3.0",
     "angular-sanitize": "^1.3.0",
-    "angularjs-slider":"^0.1.21",
-    "oauthio":"0.1.12"
+    "angularjs-slider": "^0.1.21",
+    "oauthio": "0.1.12",
+    "angular-i18n": "~1.4.2"
   },
   "devDependencies": {
     "angular-mocks": "^1.3.0"
