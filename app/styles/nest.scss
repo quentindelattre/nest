@@ -197,7 +197,7 @@
          }
          .close_modal{
             position: absolute;
-            top: 95px;
+            top: 10px;
             right: 0;
             background: none;
             border: none;
@@ -211,7 +211,7 @@
          min-width: 800px;
          .slider{
             position: absolute;
-            z-index: 10;
+            z-index: 11;
             top: 0;
             right: 0;
             height: 80px;
@@ -243,6 +243,11 @@
                }
                svg{
                   position: absolute;
+                  .layer{
+                     rect{
+                        cursor: pointer;
+                     }
+                  }
                }
             }
             .venn_diagram{

@@ -1575,7 +1575,8 @@ angular.module('nestApp.directives')
             }, true);
 
             scope.render = function(data) {
-                // Courtesy of https://gist.github.com/enjalot/1203641
+               
+                // Slightly modified code courtesy of https://gist.github.com/enjalot/1203641
 
                 var vis = d3.selectAll(".pie_chart")
                     .each(function(d, i) {
