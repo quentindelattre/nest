@@ -12,7 +12,7 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 }
 
 body {
-   font-family: 'bree-serif', 'Helvetica', sans-serif;
+   font-family: "bree-serif", 'Helvetica', sans-serif;
    padding: 0;
    height: 100vh;
    width: 100vw;
@@ -22,17 +22,18 @@ body {
 /* Custom page footer */
 footer {
    position: fixed;
-   right: 0;
+   left: 0;
    bottom: 0;
    padding-top: 10px;
    color: #777;
    border-top: 1px solid #e5e5e5;
-   text-align: right;
+   text-align: center;
    font-size: 2vw;
    padding-right: 0.5vw;
    font-size: 12px;
    font-weight: 100;
-   background: white;
+   width:20vw;
+   min-width: 200px;
 }
 
 .container-narrow > hr {
@@ -174,15 +175,31 @@ footer {
          }
          &.slider{
             top: 50px;
-            left: 41.5vw;
+            left: 39vw;
+            width: 22vw;
+            span{
+               float: left;
+               display: block;
+               margin: 10px
+            }
+         }
+         &.bar{
+            top: 250px;
+            left: 35vw;
+            width: 30vw;
+            span{
+               float: left;
+               display: block;
+               margin: 10px
+            }
          }
          &.hashtags{
-            top: 300px;
-            right: 5px;
+            top: 65vh;
+            left: 25vw;
          }
          &.venn{
-            top: 58vh;
-            left: 41.5vw;
+            top: 65vh;
+            right: 13.5vw;
          }
       }
    }

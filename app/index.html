@@ -16,7 +16,11 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
   <script src="//use.typekit.net/zip7jcy.js"></script>
-  <script>try{Typekit.load();}catch(e){}</script>
+  <script>
+    try {
+      Typekit.load();
+    } catch (e) {}
+  </script>
 </head>
 
 <body ng-app="nestApp">
@@ -50,19 +54,23 @@
     <div class="tuto" ng-if="firstOpen">
       <p class="sidebar">
         <span>1</span>
-        The sidebar shows you the numeric stats of your account
+        The sidebar shows you the numeric stats of your account.
       </p>
       <p class="slider">
         <span>2</span>
-        The time slider lets you adjust since how far back in time you want your stats to be measured
+        Adjust how far back in time you want your stats to be measured.
+      </p>
+      <p class="bar">
+        <span>3</span>
+        The bar evolution dislpays how many retweets, favorites and replies your tweets generated through time.
       </p>
       <p class="hashtags">
-        <span>3</span>
-        The popular hashtags are retrieved from your tweets over the last days you adjusted
+        <span>4</span>
+        Hashtags are retrieved from your tweets over the last days you adjusted. You can order them by frequency or by generated engagement and click to see the tweets themselves.
       </p>
       <p class="venn">
-        <span>4</span>
-        The visualization renders those stats in intuitive circles
+        <span>5</span>
+        The visualization shows the relative sizes of your followers community
       </p>
     </div>
   </div>
@@ -70,8 +78,8 @@
 
   <footer>
     <p>
-      <span class="glyphicon glyphicon-heart"></span>&nbsp;&nbsp;&nbsp;Travail de Bachelor HEIG-VD // Quentin de Lattre</p>
-    </div>
+      ©&nbsp;Travail de Bachelor HEIG-VD // Quentin de Lattre</p>
+   </footer>
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
@@ -86,6 +94,7 @@
     <script src="bower_components/angularjs-slider/rzslider.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
+    <script src="bower_components/angular-i18n/angular-locale_fr-ch.js"></script>
     <script src="http://oauthd-nest.herokuapp.com/download/latest/oauth.js"></script>
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>

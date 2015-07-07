@@ -48,10 +48,31 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             $rootScope.totalFollowers = data.followers_count;
             //when the data is retrieved resolved the defer object
             defer.resolve(data);
+         });
+         //return the promise of the defer object
+         return defer.promise;
+         function setRemainingTime(usr){
+            // The total execution time depends on the amount of followers
+            // We can execute 15 requests of 200 followers in a 15-minute window
+            // Calculate how many minutes will be needed
+            var minutes = Math.floor(((usr.followers_count / 12000) - Math.floor(usr.followers_count / 12000)) * 60);
+            // Calculate how many hours will be needed
+            var hours = Math.floor(usr.followers_count / 12000);
+            // Set in rootscop to display while loadingView is active
+            $rootScope.remaining = {
+               h: hours,
+               m: minutes
+            };
+         }
+      },
+      blockUser: function(id) {
+         var defer = $q.defer();
+         var promise = TwitterAuth.post('/1.1/blocks/create.json?user_id='+id).then(function(data) {
+            //when the data is retrieved resolved the defer object
+            defer.resolve(data);
          }, function(err) {
             // If session has expired
-            console.log('waiting...');
-            $timeout(getAuthUser, 300000); // Wait 5 minutes for new session
+            console.log('waiting...', err);
          });
          //return the promise of the defer object
          return defer.promise;
@@ -113,7 +134,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                url = url.replace(/&cursor=[\d]*/gi, "");
                url += '&cursor=' + cursor;
                // console.log(url); // For dev purposes
-               if (i < 2) { // dev
+               if (i < 0) { // dev
                // if (cursor!==0) { // Final condition
                // Create promise
                var promise = TwitterAuth.get(url);
@@ -200,7 +221,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
             // if (i < loops) { // 16 to get up to 3200 last tweets
-            if (i < 2) { // dev
+            if (i < 0) { // dev
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
@@ -277,7 +298,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Replace cursor in URL query params with new cursor
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
-            if (i < 2) { // 4 to get up to 800 last tweets
+            if (i < 0) { // 4 to get up to 800 last tweets
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
