@@ -78,8 +78,8 @@ angular.module('nestApp.directives')
             (function(venn) {
                 "use strict";
                 venn.VennDiagram = function() {
-                    var width = 1200,
-                        height = 750,
+                    var width = 625,
+                        height = 475,
                         padding = 15,
                         duration = 1000,
                         orientation = Math.PI / 2,
@@ -1480,8 +1480,8 @@ angular.module('nestApp.directives')
 
          scope.render = function(data){
             var margin = {top: 15, right: 15, bottom: 15, left: 15},
-            width = 1230 - margin.left - margin.right,
-            height = 170 - margin.top - margin.bottom;
+            width = 1525 - margin.left - margin.right,
+            height = 180 - margin.top - margin.bottom;
 
             var svg = d3.select(".bar_chart").append("svg")
                .attr("width", width + margin.left + margin.right)
@@ -1489,7 +1489,7 @@ angular.module('nestApp.directives')
                .append("g")
                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            var headers = ["Retweets","Favorites"];
+            var headers = ["Retweets","Favorites","Replies"];
 
             var layers = d3.layout.stack()(headers.map(function(count) {
                return data.map(function(d) {
@@ -1508,7 +1508,7 @@ angular.module('nestApp.directives')
 
             var color = d3.scale.ordinal()
                .domain(headers)
-               .range(["#77b255", "#ffac33"]);
+               .range(["#77b255", "#ffac33","#07c"]);
 
             var layer = svg.selectAll(".layer")
                .data(layers)
@@ -1554,4 +1554,84 @@ angular.module('nestApp.directives')
          };
       }
    }
+}])
+.directive('pieChart', ['d3', function(d3) {
+    return {
+        restrict: 'E',
+        scope: {
+            data: '=',
+            max: '@',
+            item: '@',
+            onClick: '&'
+        },
+        template: '<div class="pie_chart"></div>',
+        link: function(scope, iElement, iAttrs) {
+
+
+            // watch for data changes and re-render
+            scope.$watch('data', function(newVals, oldVals) {
+                if (newVals) {
+                    scope.render(newVals);
+                }
+            }, true);
+
+            scope.render = function(data) {
+                // Courtesy of https://gist.github.com/enjalot/1203641
+
+                var vis = d3.selectAll(".pie_chart")
+                    .each(function(d, i) {
+                        if (scope.item == i) {
+                            var w = 50, //width
+                                h = 50, //height
+                                normalized = 25 * (data.Engagement) / (scope.max),
+                                r = normalized, // adapt radius to engagement value
+                                color = d3.scale.ordinal().range(["#77b255", "#ffac33", "#07c"]); //custom range of colors
+
+                            // map data to to be used by pie chart directive
+                            var mapped = [{
+                                "label": "Retweets",
+                                "value": data.Retweets
+                            }, {
+                                "label": "Favorites",
+                                "value": data.Favorites
+                            }, {
+                                "label": "Replies",
+                                "value": data.Replies
+                            }];
+                            data = mapped;
+                            var vis = d3.select(this)
+                                .append("svg:svg") //create the SVG element inside the template
+                                .data([data]) //associate our data with the document
+                                .attr("width", w) //set the width and height of our visualization (these will be attributes of the <svg> tag
+                                .attr("height", h)
+                                .append("svg:g") //make a group to hold our pie chart
+                                .attr("transform", "translate(" + 1.5*r + "," + r + ")") //move the center of the pie chart from 0, 0 to radius, radius
+                                .on("click", function(d, i){
+                                   return scope.onClick({item: i});
+                                });
+
+                            var arc = d3.svg.arc() //this will create <path> elements for us using arc data
+                                .outerRadius(r);
+
+                            var pie = d3.layout.pie() //this will create arc data for us given a list of values
+                                .value(function(d) {
+                                    return d.value;
+                                }); //we must tell it out to access the value of each element in our data array
+
+                            var arcs = vis.selectAll("g.slice") //this selects all <g> elements with class slice (there aren't any yet)
+                                .data(pie) //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
+                                .enter() //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+                                .append("svg:g") //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+                                .attr("class", "slice"); //allow us to style things in the slices (like text)
+
+                            arcs.append("svg:path")
+                                .attr("fill", function(d, i) {
+                                    return color(i);
+                                }) //set the color for each slice to be chosen from the color function defined above
+                                .attr("d", arc); //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+                        }
+                    })
+            };
+        }
+    }
 }]);

@@ -2,13 +2,14 @@
 var services = angular.module('nestApp.services', []);
 services.factory('twitterService', function($q, $rootScope, $timeout) {
    // initialize TwitterAuth service
+   // var OAuth = require('oauthio');
    var TwitterAuth = false;
    return {
       initialize: function() {
          // Set callback URL to localhost for Developement
-         OAuth.setOAuthdURL('http://localhost:6284');
+         OAuth.setOAuthdURL('http://oauthd-nest.herokuapp.com');
          //initialize OAuth Demon with public key of the application
-         OAuth.initialize('t2URC7TqRzmRbkpdwDq0w12fyqU', {
+         OAuth.initialize('GS-2TxCExKLs3_NK3pSCW1AWrw0', {
             cache: true
          });
          //try to create an authorization result when the page loads, this means a returning user won't have to click the twitter button again
@@ -47,10 +48,31 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             $rootScope.totalFollowers = data.followers_count;
             //when the data is retrieved resolved the defer object
             defer.resolve(data);
+         });
+         //return the promise of the defer object
+         return defer.promise;
+         function setRemainingTime(usr){
+            // The total execution time depends on the amount of followers
+            // We can execute 15 requests of 200 followers in a 15-minute window
+            // Calculate how many minutes will be needed
+            var minutes = Math.floor(((usr.followers_count / 12000) - Math.floor(usr.followers_count / 12000)) * 60);
+            // Calculate how many hours will be needed
+            var hours = Math.floor(usr.followers_count / 12000);
+            // Set in rootscop to display while loadingView is active
+            $rootScope.remaining = {
+               h: hours,
+               m: minutes
+            };
+         }
+      },
+      blockUser: function(id) {
+         var defer = $q.defer();
+         var promise = TwitterAuth.post('/1.1/blocks/create.json?user_id='+id).then(function(data) {
+            //when the data is retrieved resolved the defer object
+            defer.resolve(data);
          }, function(err) {
             // If session has expired
-            console.log('waiting...');
-            $timeout(getAuthUser, 300000); // Wait 5 minutes for new session
+            console.log('waiting...', err);
          });
          //return the promise of the defer object
          return defer.promise;
@@ -112,7 +134,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                url = url.replace(/&cursor=[\d]*/gi, "");
                url += '&cursor=' + cursor;
                // console.log(url); // For dev purposes
-               if (i < 2) { // dev
+               if (i < 0) { // dev
                // if (cursor!==0) { // Final condition
                // Create promise
                var promise = TwitterAuth.get(url);
@@ -143,25 +165,19 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Create promise
             var promise = TwitterAuth.get(url);
             promise.then(function(data) {
-               // Check if response array is empty
-               if (data.length>0) {
-                  defer.resolve(data);
-                  // Set first cursor for paging
-                  cursor = data.next_cursor;
-                  // console.log('cursor', cursor); // For dev purposes
-                  // Update followersList with retrieved values
-                  followersList = followersList.concat(data.users);
-                  // Update timer
-                  updateRemainingTime();
-                  // Repeat function asynchronously if user has more than 200 followers
-                  if (usr.followers_count>200) {
-                     getFollowers(cursor);
-                  } else {
-                     // Otherwise, resolve main pormise
-                     mainDefer.resolve(followersList);
-                     return defer.promise;
-                  }
-               }else{
+               defer.resolve(data);
+               // Set first cursor for paging
+               cursor = data.next_cursor;
+               // console.log('cursor', cursor); // For dev purposes
+               // Update followersList with retrieved values
+               followersList = followersList.concat(data.users);
+               // Update timer
+               updateRemainingTime();
+               // Repeat function asynchronously if user has more than 200 followers
+               if (usr.followers_count>200) {
+                  getFollowers(cursor);
+               } else {
+                  // Otherwise, resolve main pormise
                   mainDefer.resolve(followersList);
                   return defer.promise;
                }
@@ -205,17 +221,22 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
             // if (i < loops) { // 16 to get up to 3200 last tweets
-            if (i < 2) { // dev
+            if (i < 0) { // dev
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
-                  defer.resolve(data);
-                  // Set new maxId according to last tweet's id
-                  var newMaxId = data[data.length - 1].id;
-                  // Set new timeline with retrieved values
-                  timeline = timeline.concat(data);
-                  // Repeat function asynchronously
-                  getTweet(newMaxId);
+                  if (data.length>0) {
+                     defer.resolve(data);
+                     // Set new maxId according to last tweet's id
+                     var newMaxId = data[data.length - 1].id;
+                     // Set new timeline with retrieved values
+                     timeline = timeline.concat(data);
+                     // Repeat function asynchronously
+                     getTweet(newMaxId);
+                  }else{
+                     mainDefer.resolve(timeline);
+                     return defer.promise;
+                  }
                }, function(err) {
                   console.log('waiting…');
                   $timeout(getTweet(), 300000); // Wait 5 minutes for new session
@@ -277,20 +298,25 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Replace cursor in URL query params with new cursor
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
-            if (i < 2) { // 4 to get up to 800 last tweets
+            if (i < 0) { // 4 to get up to 800 last tweets
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
                   defer.resolve(data);
-                  // Set new maxId according to last tweet's id
-                  var newMaxId = data[data.length - 1].id;
-                  // console.log('new maxId: '+newMaxId);
-                  // Set new timeline with retrieved values
-                  timeline = timeline.concat(data);
-                  //Check timeline's new size (should be +200)
-                  console.log('new timeline size : ' + timeline.length);
-                  // Repeat function asynchronously
-                  getTweet(newMaxId);
+                  if (data.length>0) {
+                     // Set new maxId according to last tweet's id
+                     var newMaxId = data[data.length - 1].id;
+                     // console.log('new maxId: '+newMaxId);
+                     // Set new timeline with retrieved values
+                     timeline = timeline.concat(data);
+                     //Check timeline's new size (should be +200)
+                     console.log('new timeline size : ' + timeline.length);
+                     // Repeat function asynchronously
+                     getTweet(newMaxId);
+                  }else{
+                     mainDefer.resolve(timeline);
+                     return defer.promise;
+                  }
                }, function(err) {
                   console.log('waiting…');
                   $timeout(getTweet, 300000); // Wait 5 minutes for new session

@@ -10,10 +10,19 @@ angular.module('nestApp')
 .controller('nestCtrl', ['$scope', '$rootScope', '$location', '$q', 'twitterService', 'user', function($scope, $root, $location, $q, twitterService, user) {
    // Set scope with user data
    $scope.user = user;
+   $scope.predicate = 'Engagement';
+   $scope.reverse = true;
+   $scope.order = function(predicate) {
+     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+     $scope.predicate = predicate;
+   };
    // Simply add ' days' in the Time Machine slider
    $scope.translate = function(value) {
       return value + ' days';
-   }
+   };
+   $scope.countReplies = function(status) {
+      return getRepliesToTweet(status.id_str);
+   };
    // Sign out, clear authentication and back to home
    $scope.signOut = function() {
       console.log('Bye bye');
@@ -29,8 +38,8 @@ angular.module('nestApp')
       }
    };
    // Steps in popular hashtags list
-   var limitStep = 10;
-   $scope.limit = 2 * limitStep;
+   var limitStep = 5;
+   $scope.limit = 3 * limitStep;
    // Show more hashtags
    $scope.incrementLimit = function() {
       $scope.limit += limitStep;
@@ -67,8 +76,44 @@ angular.module('nestApp')
          }
       });
    };
+   $scope.showTweetsForHashtag = function(h){
+      var userTimeline = $scope.userTimeline,
+         tweetId=h.tweetId,
+         hTweets = [];
+      for (var i = 0; i < tweetId.length; i++) {
+         for (var j = 0; j < userTimeline.length; j++) {
+            if (userTimeline[j].id_str===tweetId[i]) {
+               hTweets.push(userTimeline[j]);
+            }
+         }
+      }
+      $scope.selHash=h.Hashtag;
+      $scope.hTweets=hTweets;
+      if (!$scope.hModal) {
+         $scope.hModal=true
+      }
+   };
+   $scope.toggleSpam = function(){
+      $scope.showSpam=!$scope.showSpam;
+   };
+   $scope.blockUser = function (user){
+      console.log('block',user.id);
+      if (confirm('Are you sure you want to block '+user.screen_name+' ?')) {
+         var defer = $q.defer(),
+            promise = twitterService.blockUser(user.id).then(function(data){
+               console.log(data);
+               $scope.spamUsers = $scope.spamUsers.filter(function (el) {
+                  return el.id !== user.id;
+               });
+               $scope.fStats.fSpam--;
+            });
+      } else {
+         console.log('Nope.');
+      }
+   };
    $scope.closeModal = function(){
       $scope.tweetModal = false;
+      $scope.hModal = false;
    };
    // Listen for interraction with time machine slider
    $scope.$on("slideEnded", function() {
@@ -174,6 +219,7 @@ angular.module('nestApp')
    function processFollowers(followers) {
       // Empty array to collect active followers (ie. having tweeted in the last XX days set by time slider)
       var activeFollowers = [];
+      var spamUsers = [];
       // Setup followers "health" analysis
       $scope.fStats = {
          fSpam: 0,
@@ -187,11 +233,16 @@ angular.module('nestApp')
             followers[i].status = processSingleTweet(followers[i].status);
             activeFollowers.push(followers[i]);
          }
-         // If follower has a pristine default account and follows way more people than is followed by (following 10'000 accounts and is followed by 20), it is likely to be a bot or spam account
+         // If follower has a pristine default account that has been created more than a month ago and follows way more people than is followed by (following 10'000 accounts and is followed by 20), we will assume in this case taht it is likely to be a bot or spam account
          var defaultProfile = followers[i].default_profile,
          defaultProfileImage = followers[i].default_profile_image,
-         ffRatio = followers[i].followers_count / followers[i].friends_count;
-         if (defaultProfileImage && defaultProfile && ffRatio < 0.01) {
+         ffRatio = followers[i].followers_count / followers[i].friends_count,
+         creationDate = parseTwitterDate(followers[i].created_at),
+         today = new Date(),
+         timeDiff = (today-creationDate)/ 3600 / 1000 / 24; // in days
+
+         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31) {
+            spamUsers.push(followers[i]);
             $scope.fStats.fSpam++;
          } else if (followers[i].tweet_count !== 0) {
             // If user has tweeted at least once and modified his default account, it is considered a regular user
@@ -202,6 +253,7 @@ angular.module('nestApp')
             $scope.fStats.fVerif++;
          }
       }
+      $scope.spamUsers=spamUsers;
       // Sort followers array from most recent tweet to oldest
       activeFollowers.reverse(activeFollowers.sort(compareFollowers));
       return activeFollowers;
@@ -235,6 +287,7 @@ angular.module('nestApp')
    };
    function setBarData(){
       var userTimeline = $scope.userTimeline,
+         mentionsTimeline = $scope.mentionsTimeline,
          tMax = $scope.timeMachine.ceil,
          favCount = 0,
          rtCount = 0,
@@ -248,11 +301,23 @@ angular.module('nestApp')
          var newData = {
             Day:  i,
             Retweets:   rtCount,
-            Favorites:  favCount
+            Favorites:  favCount,
+            Replies:    0
          };
          barData.push(newData);
          prevRtCount=prevRtCount+rtCount;
          prevFavCount=prevFavCount+favCount;
+      }
+      for (var i = 0; i < mentionsTimeline.length; i++) {
+         var correspondingTweet = null;
+         if (mentionsTimeline[i].in_reply_to_status_id_str !== null) {
+            correspondingTweet = userTimeline.filter(function (el) {
+              return el.id_str === mentionsTimeline[i].in_reply_to_status_id_str;
+            });
+            if (correspondingTweet.length>0) {
+               barData[correspondingTweet[0].created_at.days].Replies++;
+            }
+         }
       }
       $scope.barData=barData;
    }
@@ -326,49 +391,77 @@ angular.module('nestApp')
          // Create empty array to collect all hashtags in user's timeline
          var hashtags = [];
          for (var i = 0; i < timeline.length; i++) {
-            // If the date of the tweet is prior to the time limit, get its hashtags.
+            // If the date of the tweet is before the time limit, get its hashtags.
             if (timeline[i].created_at.days <= timeLimit) {
                for (var j = 0; j < timeline[i].entities.hashtags.length; j++) {
-                  hashtags.push(timeline[i].entities.hashtags[j].text);
+                  var newData = {
+                     Hashtag:    timeline[i].entities.hashtags[j].text,
+                     tweetId:    timeline[i].id_str,
+                     Favorites:  timeline[i].favorite_count,
+                     Retweets:   timeline[i].retweet_count,
+                     Replies:    getRepliesToTweet(timeline[i].id_str),
+                     Engagement: timeline[i].favorite_count+timeline[i].retweet_count+getRepliesToTweet(timeline[i].id_str),
+                     Frequency:  1
+                  };
+                  hashtags.push(newData);
                }
             }
          }
-         hashtags.sort();
-         function count(arr) { // count occurrences of indentical hashtags
-            var o = {};
-            for (var i = 0; i < arr.length; ++i) {
-               o[arr[i]] = (o[arr[i]] || 0) + 1;
-            }
-            o = sortProperties(o);
-            return o;
+         function compare(a,b) {
+           if (a.Hashtag < b.Hashtag)
+             return -1;
+           if (a.Hashtag > b.Hashtag)
+             return 1;
+           return 0;
          }
-         function sortProperties(obj) {
-            // convert object into array
-            var sortable = [];
-            for (var key in obj) {
-               if (obj.hasOwnProperty(key)) {
-                  sortable.push([key, obj[key]]);
+         hashtags.sort(compare);
+
+         var merge = function(list) {
+           var result = [];
+           var store = {};
+           var addables = ['Favorites', 'Retweets', 'Replies', 'Frequency', 'Engagement'];
+
+           list.forEach(function(item) {
+             // Check exist by hashtag.
+             if (typeof store[item.Hashtag] === 'undefined') {
+               // clone item, not alter origin list.
+               store[item.Hashtag] = JSON.parse(JSON.stringify(item));
+               result.push(store[item.Hashtag]);
+             } else {
+               var soruce = store[item.Hashtag];
+               // Check if its already combined or not.
+               if( Object.prototype.toString.call(soruce.tweetId) === '[object Array]') {
+                 soruce.tweetId.push(item.tweetId);
+               } else {
+                 soruce.tweetId = [soruce.tweetId, item.tweetId];
                }
-            }
-            // sort items by value
-            sortable.sort(function(a, b) {
-               return b[1] - a[1]; // compare numbers
-            });
-            var hasht = [];
-            for (var i = 0; i < sortable.length; i++) {
-               var t = {};
-               t.hashtag = sortable[i][0];
-               t.count = sortable[i][1];
-               hasht[i] = t;
-            }
-            return hasht; // array in format [ {key1 :val1 }, ... ]
-         }
-         $scope.hashtags = count(hashtags);
+               // Add addable attributes.
+               addables.forEach(function(key) {
+                 soruce[key] += item[key];
+               });
+             }
+           });
+
+           return result;
+         };
+         $scope.hashtags=merge(hashtags);
+         $scope.hashtagMaxEngagement = Math.max.apply( Math, $scope.hashtags.map(function(o){return o.Engagement;}));
          // Disable buttons if there are no hashtags to display
          if ($scope.hashtags === 0) {
             $scope.disableMore = true;
             $scope.disableLess = true;
          }
+      }
+      function getRepliesToTweet(id){
+         var mentionsTimeline = $scope.mentionsTimeline,
+            repliesCount = 0;
+
+         for (var i = 0; i < mentionsTimeline.length; i++) {
+            if (mentionsTimeline[i].in_reply_to_status_id_str === id) {
+               repliesCount++;
+            }
+         }
+         return repliesCount;
       }
       function processTweets(tweets) {
          // Process Tweets to get time difference
