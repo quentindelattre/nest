@@ -78,7 +78,6 @@
          <button class="btn btn-simple" ng-click="spamLimit = spamLimit+spamLimit" ng-disabled="spamLimit<1" type="button">Less</button>
        </div>
      </div>
-    </div>
     <div class="viz_wrap">
       <div class="slider">
         <rzslider ng-if="timeMachine" rz-slider-always-show-bar="true" rz-slider-ceil="timeMachine.ceil" rz-slider-floor="timeMachine.floor" rz-slider-model="timeMachine.max" rz-slider-translate="translate"></rzslider>
@@ -102,7 +101,7 @@
                </div>
                <div class="engagement">
                   <pie-chart data="h" max="{{hashtagMaxEngagement}}" item="{{$index}}" ng-click="showTweetsForHashtag(h)"></pie-chart>
-                  
+
                   <div class="hashtag_tooltip">
                      <ul class="stats_details">
                         <li>Total engagement : {{h.Engagement}}</li>
