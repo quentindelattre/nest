@@ -349,23 +349,41 @@
                         float: right;
                         text-align: right;
                         cursor: pointer;
+                        position:relative;
                         .hashtag_tooltip{
                            color: #fff;
                            background: rgba(0, 0, 0, 0.8);
                            border-radius: 5px;
                            padding: 2px 5px;
-                           // position: absolute;
-                           // height: 25px;
-                           // width: 120px;
-                           // bottom: -28px;
-                           // left: -45px;
+                           position: absolute;
+                           left:-165px;
+                           width:150px;
                            -webkit-transition:all linear 0.15s;
                            -moz-transition:all linear 0.15s;
                            -o-transition:all linear 0.15s;
                            transition:all linear 0.15s;
                            opacity:0;
                            .details{
-                              list-style: none;
+                              list-style:none;
+                              float: left;
+                              padding: 0;
+                              .h_d{
+                                 float: left;
+                                 width:40px;
+                                 span{
+                                    margin-right: 5px;
+                                 }
+                                 &.rt{
+                                    color: #77b255;
+                                 }
+                                 &.f{
+                                    color:#ffac33;
+                                    margin: 0 15px;
+                                 }
+                                 &.rp{
+                                    color:#07c;
+                                 }
+                              }
                            }
                         }
                         &:hover .hashtag_tooltip{

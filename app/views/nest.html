@@ -103,9 +103,9 @@
                   <div class="hashtag_tooltip">
                      <ul class="details">
                         <li>Total engagement : {{h.Engagement}}</li>
-                        <li><span class="glyphicon glyphicon-retweet"></span>{{h.Retweets}}</li>
-                        <li><span class="glyphicon glyphicon-star"></span>{{h.Favorites}}</li>
-                        <li><span class="glyphicon glyphicon-share-alt"></span>{{h.Replies}}</li>
+                        <li class="h_d rt"><span class="glyphicon glyphicon-retweet"></span>{{h.Retweets}}</li>
+                        <li class="h_d f"><span class="glyphicon glyphicon-star"></span>{{h.Favorites}}</li>
+                        <li class="h_d rp"><span class="glyphicon glyphicon-share-alt"></span>{{h.Replies}}</li>
                      </ul>
                   </div>
                   <pie-chart data="h" max="{{hashtagMaxEngagement}}" item="{{$index}}" ng-click="showTweetsForHashtag(h)"></pie-chart>
