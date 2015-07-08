@@ -101,15 +101,15 @@
                   {{h.Frequency}} times
                </div>
                <div class="engagement">
-                  <pie-chart data="h" max="{{hashtagMaxEngagement}}" item="{{$index}}" ng-click="showTweetsForHashtag(h)"></pie-chart>
                   <div class="hashtag_tooltip">
-                     <ul class="stats_details">
+                     <ul class="details">
                         <li>Total engagement : {{h.Engagement}}</li>
                         <li><span class="glyphicon glyphicon-retweet"></span>{{h.Retweets}}</li>
                         <li><span class="glyphicon glyphicon-star"></span>{{h.Favorites}}</li>
                         <li><span class="glyphicon glyphicon-share-alt"></span>{{h.Replies}}</li>
                      </ul>
                   </div>
+                  <pie-chart data="h" max="{{hashtagMaxEngagement}}" item="{{$index}}" ng-click="showTweetsForHashtag(h)"></pie-chart>
                </div>
             </li>
            </ol>
