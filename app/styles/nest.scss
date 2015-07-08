@@ -356,20 +356,23 @@
                            border-radius: 5px;
                            padding: 2px 5px;
                            position: absolute;
-                           left:-165px;
-                           width:150px;
+                           left: -185px;
+                           width: 170px;
                            -webkit-transition:all linear 0.15s;
                            -moz-transition:all linear 0.15s;
                            -o-transition:all linear 0.15s;
                            transition:all linear 0.15s;
                            opacity:0;
                            .details{
-                              list-style:none;
+                              list-style: none;
                               float: left;
-                              padding: 0;
+                              padding: 0 5px;
+                              .total{
+                                 text-align: center;
+                              }
                               .h_d{
                                  float: left;
-                                 width:40px;
+                                 width:30%;
                                  span{
                                     margin-right: 5px;
                                  }
@@ -378,10 +381,12 @@
                                  }
                                  &.f{
                                     color:#ffac33;
-                                    margin: 0 15px;
+                                    margin: 0 5%;
+                                    text-align: center;
                                  }
                                  &.rp{
                                     color:#07c;
+                                    text-align: right;
                                  }
                               }
                            }
