@@ -1,0 +1,14 @@
+{
+  "name": "oauthio",
+  "homepage": "https://github.com/oauth-io/oauthd",
+  "version": "0.1.12",
+  "_release": "0.1.12",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.12",
+    "commit": "7a4d41a5278949e4afde15d0d0a29088b98ba54b"
+  },
+  "_source": "git://github.com/oauth-io/oauthd.git",
+  "_target": "0.1.12",
+  "_originalSource": "oauthio"
+}

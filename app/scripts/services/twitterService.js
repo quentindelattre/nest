@@ -2,7 +2,7 @@
 var services = angular.module('nestApp.services', []);
 services.factory('twitterService', function($q, $rootScope, $timeout) {
    // initialize TwitterAuth service
-   // var OAuth = require('oauthio');
+
    var TwitterAuth = false;
    return {
       initialize: function() {
@@ -134,8 +134,8 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
                url = url.replace(/&cursor=[\d]*/gi, "");
                url += '&cursor=' + cursor;
                // console.log(url); // For dev purposes
-               if (i < 0) { // dev
-               // if (cursor!==0) { // Final condition
+               // if (i < 0) { // dev
+               if (cursor!==0) { // Final condition
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
@@ -220,8 +220,8 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Replace cursor in URL query params with new cursor
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
-            // if (i < loops) { // 16 to get up to 3200 last tweets
-            if (i < 0) { // dev
+            if (i < loops) { // 16 to get up to 3200 last tweets
+            // if (i < 0) { // dev
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {
@@ -298,7 +298,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
             // Replace cursor in URL query params with new cursor
             url = url.replace(/&max_id=[\d]*/gi, "");
             url += '&max_id=' + maxId;
-            if (i < 0) { // 4 to get up to 800 last tweets
+            if (i < 4) { // 4 to get up to 800 last tweets
                // Create promise
                var promise = TwitterAuth.get(url);
                promise.then(function(data) {

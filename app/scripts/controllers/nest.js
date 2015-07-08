@@ -237,11 +237,12 @@ angular.module('nestApp')
          var defaultProfile = followers[i].default_profile,
          defaultProfileImage = followers[i].default_profile_image,
          ffRatio = followers[i].followers_count / followers[i].friends_count,
+         isProtected = followers[i].protected,
          creationDate = parseTwitterDate(followers[i].created_at),
          today = new Date(),
          timeDiff = (today-creationDate)/ 3600 / 1000 / 24; // in days
 
-         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31) {
+         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31 && !isProtected && followers[i].followers_count>0) {
             spamUsers.push(followers[i]);
             $scope.fStats.fSpam++;
          } else if (followers[i].tweet_count !== 0) {

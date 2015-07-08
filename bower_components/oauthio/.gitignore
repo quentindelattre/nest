@@ -1,0 +1,15 @@
+/node_modules/
+/npm-debug.log
+/out.log
+/err.log
+/forever.log
+/plugins/server.*/*.js
+!/plugins/server.*/gruntConfig.js
+/lib/*.js
+/lib/*.map
+/plugins/**/*.map
+.nodemonignore
+nohup.out
+config.local.js
+*.sublime-*
+/.idea/

@@ -102,14 +102,16 @@
                            -o-transition:all linear 0.15s;
                            transition:all linear 0.15s;
                         }
-                        &:first-child{
-                           cursor: pointer;
-                        }
                         position: relative;
                         margin: 0 15px;
                         text-align: center;
                         font-size: 13px;
                         font-weight: 300;
+                     }
+                  }
+                  .followers_details{
+                     &:first-child{
+                        cursor: pointer;
                      }
                   }
                }
@@ -178,6 +180,7 @@
          left: 20vw;
          background-color: rgba(245, 245, 245, 0.9);
          height: 100%;
+         overflow:scroll;
          min-width: 12vw;
          padding: 95px 15px 15px;
          border-right: 1px solid #e5e5e5;
@@ -296,6 +299,7 @@
                   &.engagement{
                      float: right;
                      text-align: right;
+                     position: relative;
                   }
                   span{
                      font-size: 12px;
@@ -345,6 +349,58 @@
                         float: right;
                         text-align: right;
                         cursor: pointer;
+                        position:relative;
+                        .hashtag_tooltip{
+                           color: #fff;
+                           background: rgba(0, 0, 0, 0.8);
+                           border-radius: 5px;
+                           padding: 2px 5px;
+                           position: absolute;
+                           left: -185px;
+                           width: 170px;
+                           -webkit-transition:all linear 0.15s;
+                           -moz-transition:all linear 0.15s;
+                           -o-transition:all linear 0.15s;
+                           transition:all linear 0.15s;
+                           opacity:0;
+                           .details{
+                              list-style: none;
+                              float: left;
+                              padding: 0 5px;
+                              li:hover{
+                                 background: transparent;
+                              }
+                              .total{
+                                 text-align: center;
+                              }
+                              .h_d{
+                                 float: left;
+                                 width:30%;
+                                 span{
+                                    margin-right: 5px;
+                                 }
+                                 &.rt{
+                                    color: #77b255;
+                                 }
+                                 &.f{
+                                    color:#ffac33;
+                                    margin: 0 5%;
+                                    text-align: center;
+                                 }
+                                 &.rp{
+                                    color:#07c;
+                                    text-align: right;
+                                 }
+                              }
+                           }
+                        }
+                        &:hover .hashtag_tooltip{
+                           opacity: 1;
+                           -webkit-transition:all linear 0.15s;
+                           -moz-transition:all linear 0.15s;
+                           -o-transition:all linear 0.15s;
+                           transition:all linear 0.15s;
+                        }
                         .pie_chart{
                            svg{
                               margin: 0 auto;
