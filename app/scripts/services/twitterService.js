@@ -2,12 +2,12 @@
 var services = angular.module('nestApp.services', []);
 services.factory('twitterService', function($q, $rootScope, $timeout) {
    // initialize TwitterAuth service
-   // var OAuth = require('oauthio');
+
    var TwitterAuth = false;
    return {
       initialize: function() {
          // Set callback URL to localhost for Developement
-         OAuth.setOAuthdURL('https://nest.herokuapp.com');
+         OAuth.setOAuthdURL('http://oauthd-nest.herokuapp.com');
          //initialize OAuth Demon with public key of the application
          OAuth.initialize('GS-2TxCExKLs3_NK3pSCW1AWrw0', {
             cache: true
