@@ -13,7 +13,7 @@ angular.module('nestApp')
    $scope.predicate = 'Engagement';
    $scope.reverse = true;
    $scope.order = function(predicate) {
-     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : true;
      $scope.predicate = predicate;
    };
    // Simply add ' days' in the Time Machine slider
@@ -233,15 +233,16 @@ angular.module('nestApp')
             followers[i].status = processSingleTweet(followers[i].status);
             activeFollowers.push(followers[i]);
          }
-         // If follower has a pristine default account that has been created more than a month ago and follows way more people than is followed by (following 10'000 accounts and is followed by 20), we will assume in this case taht it is likely to be a bot or spam account
+         // If follower has a pristine default account that has been created more than a month ago, that is not protected and follows way more people than is followed by (following 10'000 accounts and is followed by 20), we will assume in this case taht it is likely to be a bot or spam account
          var defaultProfile = followers[i].default_profile,
          defaultProfileImage = followers[i].default_profile_image,
          ffRatio = followers[i].followers_count / followers[i].friends_count,
+         isProtected = followers[i].protected,
          creationDate = parseTwitterDate(followers[i].created_at),
          today = new Date(),
          timeDiff = (today-creationDate)/ 3600 / 1000 / 24; // in days
 
-         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31) {
+         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31 && !isProtected && followers[i].followers_count!==0) {
             spamUsers.push(followers[i]);
             $scope.fStats.fSpam++;
          } else if (followers[i].tweet_count !== 0) {

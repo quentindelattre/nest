@@ -71,8 +71,13 @@
            <span class="glyphicon glyphicon-remove"></span>
      </button>
        <ul>
-          <li ng-repeat="s in spamUsers | orderBy: '-created_at'"><a ng-href="http://www.twitter.com/{{s.screen_name}}" target="_blank">@{{s.screen_name}}</a> <span class="glyphicon glyphicon-ban-circle" ng-click="blockUser(s)"></span></li>
+          <li ng-repeat="s in spamUsers | orderBy: '-created_at' | limitTo:spamLimit" ng-init="spamLimit = 35"><a ng-href="http://www.twitter.com/{{s.screen_name}}" target="_blank">@{{s.screen_name}}</a> <span class="glyphicon glyphicon-ban-circle" ng-click="blockUser(s)"></span></li>
        </ul>
+       <div class="bottom">
+         <button class="btn btn-simple" ng-click="spamLimit = spamLimit+spamLimit" type="button">More</button>
+         <button class="btn btn-simple" ng-click="spamLimit = spamLimit+spamLimit" ng-disabled="spamLimit<1" type="button">Less</button>
+       </div>
+     </div>
     </div>
     <div class="viz_wrap">
       <div class="slider">
@@ -97,6 +102,14 @@
                </div>
                <div class="engagement">
                   <pie-chart data="h" max="{{hashtagMaxEngagement}}" item="{{$index}}" ng-click="showTweetsForHashtag(h)"></pie-chart>
+                  <div class="hashtag_tooltip">
+                     <ul class="stats_details">
+                        <li>Total engagement : {{h.Engagement}}</li>
+                        <li><span class="glyphicon glyphicon-retweet"></span>{{h.Retweets}}</li>
+                        <li><span class="glyphicon glyphicon-star"></span>{{h.Favorites}}</li>
+                        <li><span class="glyphicon glyphicon-share-alt"></span>{{h.Replies}}</li>
+                     </ul>
+                  </div>
                </div>
             </li>
            </ol>

@@ -56,7 +56,7 @@ angular.module('nestApp.directives')
                   })
 
                   .on("mousemove", function() {
-                     tooltip.style("left", (d3.event.pageX)-445 + "px").style('position', 'absolute').style("top", (d3.event.pageY - 80) + "px");
+                     tooltip.style("left", (d3.event.pageX)-45 + "px").style('position', 'absolute').style("top", (d3.event.pageY - 80) + "px");
                      // tooltip.style('position', 'absolute')
                         // .style('top', '0').style('left','0');
                   })
@@ -1575,7 +1575,7 @@ angular.module('nestApp.directives')
             }, true);
 
             scope.render = function(data) {
-               
+
                 // Slightly modified code courtesy of https://gist.github.com/enjalot/1203641
 
                 var vis = d3.selectAll(".pie_chart")
