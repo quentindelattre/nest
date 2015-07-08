@@ -299,7 +299,7 @@
                   &.engagement{
                      float: right;
                      text-align: right;
-                     .tooltip{
+                     .hashtag_tooltip{
                         color: #fff;
                         background: rgba(0, 0, 0, 0.8);
                         border-radius: 5px;
@@ -319,7 +319,7 @@
                            list-style: none;
                         }
                      }
-                     &:hover .tooltip{
+                     &:hover .hashtag_tooltip{
                         opacity: 1;
                         -webkit-transition:all linear 0.15s;
                         -moz-transition:all linear 0.15s;
