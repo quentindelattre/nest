@@ -13,7 +13,7 @@ angular.module('nestApp')
    $scope.predicate = 'Engagement';
    $scope.reverse = true;
    $scope.order = function(predicate) {
-     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : true;
+     $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
      $scope.predicate = predicate;
    };
    // Simply add ' days' in the Time Machine slider
@@ -242,7 +242,9 @@ angular.module('nestApp')
          today = new Date(),
          timeDiff = (today-creationDate)/ 3600 / 1000 / 24; // in days
 
-         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31 && !isProtected && followers[i].followers_count!==0) {
+         console.log(isProtected);
+
+         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31 && !isProtected) {
             spamUsers.push(followers[i]);
             $scope.fStats.fSpam++;
          } else if (followers[i].tweet_count !== 0) {
