@@ -242,7 +242,7 @@ angular.module('nestApp')
          today = new Date(),
          timeDiff = (today-creationDate)/ 3600 / 1000 / 24; // in days
 
-         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31 && !isProtected) {
+         if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31 && !isProtected && follower[i].followers_count>0) {
             spamUsers.push(followers[i]);
             $scope.fStats.fSpam++;
          } else if (followers[i].tweet_count !== 0) {
