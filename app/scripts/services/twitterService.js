@@ -7,7 +7,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
    return {
       initialize: function() {
          // Set callback URL to localhost for Developement
-         OAuth.setOAuthdURL('https://oauthd-nest.herokuapp.com');
+         OAuth.setOAuthdURL('https://nest.herokuapp.com');
          //initialize OAuth Demon with public key of the application
          OAuth.initialize('GS-2TxCExKLs3_NK3pSCW1AWrw0', {
             cache: true
