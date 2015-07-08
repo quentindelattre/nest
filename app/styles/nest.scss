@@ -365,9 +365,7 @@
                            -o-transition:all linear 0.15s;
                            transition:all linear 0.15s;
                            opacity:0;
-                           .details{
-                              list-style: none;
-                           }
+                           list-style: none;
                         }
                         &:hover .hashtag_tooltip{
                            opacity: 1;
