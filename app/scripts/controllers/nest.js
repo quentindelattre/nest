@@ -233,7 +233,7 @@ angular.module('nestApp')
             followers[i].status = processSingleTweet(followers[i].status);
             activeFollowers.push(followers[i]);
          }
-         // If follower has a pristine default account that has been created more than a month ago, that is not protected and follows way more people than is followed by (following 10'000 accounts and is followed by 20), we will assume in this case taht it is likely to be a bot or spam account
+         // If follower has a pristine default account that has been created more than a month ago and follows way more people than is followed by (following 10'000 accounts and is followed by 20), we will assume in this case taht it is likely to be a bot or spam account
          var defaultProfile = followers[i].default_profile,
          defaultProfileImage = followers[i].default_profile_image,
          ffRatio = followers[i].followers_count / followers[i].friends_count,
@@ -241,8 +241,6 @@ angular.module('nestApp')
          creationDate = parseTwitterDate(followers[i].created_at),
          today = new Date(),
          timeDiff = (today-creationDate)/ 3600 / 1000 / 24; // in days
-
-         console.log(isProtected);
 
          if (defaultProfileImage && defaultProfile && ffRatio < 0.01 && timeDiff>31 && !isProtected) {
             spamUsers.push(followers[i]);
