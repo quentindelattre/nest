@@ -56,7 +56,7 @@ angular.module('nestApp.directives')
                   })
 
                   .on("mousemove", function() {
-                     tooltip.style("left", (d3.event.pageX) + "px").style('position', 'fixed').style("top", (d3.event.pageY - 25) + "px");
+                     tooltip.style("left", (d3.event.pageX - 25) + "px").style('position', 'fixed').style("top", (d3.event.pageY - 25) + "px");
                      // tooltip.style('position', 'absolute')
                         // .style('top', '0').style('left','0');
                   })
