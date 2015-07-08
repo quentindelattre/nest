@@ -367,6 +367,9 @@
                               list-style: none;
                               float: left;
                               padding: 0 5px;
+                              li:hover{
+                                 background: transparent;
+                              }
                               .total{
                                  text-align: center;
                               }
