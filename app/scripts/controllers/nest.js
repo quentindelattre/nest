@@ -78,7 +78,7 @@ angular.module('nestApp')
    };
    $scope.showTweetsForHashtag = function(h){
       var userTimeline = $scope.userTimeline,
-         tweetId=h.tweetId,
+         tweetId=h.tweetId_str,
          hTweets = [];
       for (var i = 0; i < tweetId.length; i++) {
          for (var j = 0; j < userTimeline.length; j++) {
