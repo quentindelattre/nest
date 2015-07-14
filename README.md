@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Nest is my Bachelor project at [HEIG-VD](http://www.heig-vd.ch). It was developed to provide an Analytics Tool focused on measuring followers activity and engagement for the Radio Télévision Suisse (RTS) - public service TV and Radio broadcast company over its multiple Twitter accounts.
+Nest is my Bachelor project at [HEIG-VD](http://www.heig-vd.ch). It was developed to provide an Analytics Tool focused on measuring followers activity and engagement over the many Twitter accounts of the Radio Télévision Suisse (RTS) - the Swiss public service TV and Radio broadcast company.
 
 This web application runs on [AngularJS](https://angularjs.org) and renders the data visualization through the  [D3](http://d3js.org) library. The Venn diagram rendering is courtesy of [Benfred's venn.js plugin](https://github.com/benfred/venn.js).
 
@@ -72,6 +72,8 @@ On the left sidebar of the visualization page, you have numerical statistics abo
 
 Adjust the time period of the stats with the slider. This allows you to visualize the evolution of your account and adapts all of the stats in the visualization.
 
+The Venn diagram adjust with the Time Machine, on hover, the value of the circle is displayed in a tooltip. This tool allows you to visualize the growth of the sub-elements of your followers over time.
+
 ![](/screenshots/04_TimeMachineStats.jpg)
 
 #### Sidebar
@@ -96,7 +98,6 @@ The hashtags visualization allows you to gain insight over the content of your t
 
 ![](/screenshots/06.1_HashtagsChange.jpg)
 
-The Venn diagram adjust with the Time Machine, on hover, the value of the circle is displayed in a tooltip. This tool allows you to visualize the growth of the sub-elements of your followers over time.
 
 # Copyright & License
 
