@@ -127,6 +127,9 @@ angular.module('nestApp')
       getValues(user).then(function() {
          // When all data have been retrieved, set the time machine to max at the oldes tweet from user
          var oldestUserTweet = $scope.userTimeline[$scope.userTimeline.length - 1].created_at.days;
+         if (oldestUserTweet>365) {
+            oldestUserTweet=365;
+         }
          // Apply value to the slider
          $scope.timeMachine = {
             max: 7,
