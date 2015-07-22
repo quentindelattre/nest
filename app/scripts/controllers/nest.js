@@ -192,6 +192,7 @@ angular.module('nestApp')
       var defer = $q.defer();
       // Call twitterService and execute promise
       var userTimelinePromise = twitterService.getUserTimeline(usr).then(function(timelineData) {
+         timelineData=filterRetweets(timelineData);
          $scope.userTimeline = processTimeline(timelineData);
          // Switch glyphicon to a check
          $root.acquUserTimeline = 'ok';
@@ -199,6 +200,19 @@ angular.module('nestApp')
          defer.resolve(timelineData);
       });
       return defer.promise;
+   }
+   function filterRetweets(t){
+      var retweets =[],
+          original=[];
+      for (var i = 0; i < t.length; i++) {
+         if (t[i].retweeted) {
+            retweets.push(t[i]);
+         }else{
+            original.push(t[i]);
+         };
+      }
+      $scope.retweets = retweets;
+      return original;
    }
    function getUserMentions(usrId) {
       console.log('Calling getUserMentions');
