@@ -80,15 +80,20 @@ angular.module('nestApp')
       var userTimeline = $scope.userTimeline,
          tweetId=h.tweetId,
          hTweets = [];
-      for (var i = 0; i < tweetId.length; i++) {
-         for (var j = 0; j < userTimeline.length; j++) {
-            if (userTimeline[j].id_str===tweetId[i]) {
-               hTweets.push(userTimeline[j]);
-            }
+      if (Array.isArray(tweetId)) {
+         for (var i = 0; i < tweetId.length; i++) {
+            var hTweet = userTimeline.filter(function(el){
+               return el.id_str === tweetId[i];
+            });
+            hTweets=hTweets.concat(hTweet);
          }
+         $scope.hTweets=hTweets;
+      }else{
+         $scope.hTweets=userTimeline.filter(function(el){
+            return el.id_str === tweetId;
+         });
       }
       $scope.selHash=h.Hashtag;
-      $scope.hTweets=hTweets;
       if (!$scope.hModal) {
          $scope.hModal=true
       }
