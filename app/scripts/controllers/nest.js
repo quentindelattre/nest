@@ -544,7 +544,6 @@ angular.module('nestApp')
     var tDate = new Date(input);
     var out = "";
     out=tDate.toLocaleString().replace(/:\d+ UTC\+.$/gi, "");
-    console.log(input,out);
     return out;
   };
 });
