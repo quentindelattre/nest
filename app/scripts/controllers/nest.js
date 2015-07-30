@@ -492,7 +492,7 @@ angular.module('nestApp')
             var tweet_date = tweets[i].created_at;
             // parse twitter date format to human readable date
             tweet_date = parseTwitterDate(tweet_date);
-            tweets[i].tweetDate=tweets[i].created_at;
+            tweets[i].tweetDate=tweet_date;
             var today = new Date();
             var deltaT = today - tweet_date; //in ms
             var dDiff = deltaT / 3600 / 1000 / 24; //in days
@@ -544,6 +544,7 @@ angular.module('nestApp')
     var tDate = new Date(input);
     var out = "";
     out=tDate.toLocaleString().replace(/:\d+ UTC\+.$/gi, "");
+    console.log(input,out);
     return out;
   };
 });
