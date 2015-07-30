@@ -146,6 +146,7 @@
     </button>
     <ol>
       <li class="tweet_wrap" ng-repeat="t in hTweets | orderBy:'-retweet_count'">
+        <h4>Sent : <span>{{user.status.created_at|twitterDate}}</span></h4>
         <p>
            «{{t.text}}»
         </p>

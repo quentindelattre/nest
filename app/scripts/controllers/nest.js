@@ -492,6 +492,7 @@ angular.module('nestApp')
             var tweet_date = tweets[i].created_at;
             // parse twitter date format to human readable date
             tweet_date = parseTwitterDate(tweet_date);
+            tweets[i].tweetDate=tweets[i].created_at;
             var today = new Date();
             var deltaT = today - tweet_date; //in ms
             var dDiff = deltaT / 3600 / 1000 / 24; //in days
