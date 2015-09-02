@@ -9,7 +9,7 @@ services.factory('twitterService', function($q, $rootScope, $timeout) {
          // Set callback URL to localhost for Developement
          OAuth.setOAuthdURL('http://oauthd-nest.herokuapp.com');
          //initialize OAuth Demon with public key of the application
-         OAuth.initialize('GS-2TxCExKLs3_NK3pSCW1AWrw0', {
+         OAuth.initialize('cRwVCylgrK1I-Ox9TDOEBr3gWUM', {
             cache: true
          });
          //try to create an authorization result when the page loads, this means a returning user won't have to click the twitter button again
